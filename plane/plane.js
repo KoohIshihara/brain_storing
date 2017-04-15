@@ -1,19 +1,38 @@
-
-var addFractalPlane = function(scene){
-  var planeGeometry = new THREE.PlaneGeometry(80, 80);
+// FractalPlaneクラス
+var FractalPlane = function(_x, _y) {
+  // コンストラクタ
+  var planeGeometry = new THREE.PlaneGeometry(10, 0);
   var planeMaterial = new THREE.MeshBasicMaterial({color: 0xcccccc});
   var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-  /*
+  plane.position.x = _x;
+  plane.position.y = _y;
   var baseVertix = [];
-  for(var i=0; i<2; i++){
+  for(var i=0; i<4; i++) {
     baseVertix[i] = {
       x: plane.geometry.vertices[i].x,
       y: plane.geometry.vertices[i].y,
       z: plane.geometry.vertices[i].z,
     }
   }
-  */
-  scene.add(plane);
+
+  this.nowHeight = 0;
+  this.maxHeight = 40;
+  this.baseVertix = baseVertix; // [0] [1] が上の辺
+  this.mesh = plane;
+}
+
+FractalPlane.prototype.update = function() {
+  if (this.nowHeight < this.maxHeight) {
+    this.mesh.geometry.verticesNeedUpdate = true;
+    this.nowHeight+=0.1;
+    this.mesh.geometry.vertices[0].y = this.baseVertix[0].y + this.nowHeight;
+    this.mesh.geometry.vertices[1].y = this.baseVertix[1].y + this.nowHeight;
+    this.mesh.rotation.z += 0.1;
+  }
+}
+
+FractalPlane.prototype.getMesh = function() {
+  return this.mesh;
 }
 
 
@@ -26,7 +45,7 @@ function init() {
   var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.x = 0;
   camera.position.y = 0;
-  camera.position.z = 80;
+  camera.position.z = 180;
   camera.lookAt(scene.position);
 
   // create a render and set the size
@@ -37,6 +56,8 @@ function init() {
   // show axes in the screen
   var axes = new THREE.AxisHelper(20);
   scene.add(axes);
+
+
 
   var planeGeometry = new THREE.PlaneGeometry(4, 0);
   var planeMaterial = new THREE.MeshBasicMaterial({color: 0xcccccc});
@@ -52,36 +73,33 @@ function init() {
   plane.position.y = 10;
   scene.add(plane);
 
+  //addFractalPlane(scene);
+  var instance = new FractalPlane(20,40);
+  console.log(instance);
+  scene.add(instance.getMesh());
 
+  //-GUIの設定--------------------------------
   var controls = new function () {
     
     this.scaleX = 1.0;
-    this.rotationZ = 0;
-    this.vertex = 0;
 
   };
   var gui = new dat.GUI();
   
   gui.add(controls, 'scaleX', 0, 3.0);
-  gui.add(controls, 'rotationZ', -0.5, 0.5);
-  gui.add(controls, 'vertex', 0, 40);
   
+  //-------------------------------------
 
   // add the output of the renderer to the html element
   document.getElementById("WebGL-output").appendChild(renderer.domElement);
 
-  console.log(plane.geometry);
-  console.log(baseVertix);
+  //console.log(plane.geometry);
+  //console.log(baseVertix);
+
   render();
   function render(){
 
-    plane.scale.x = controls.scaleX;
-
-    plane.rotation.z = controls.rotationZ * (2*Math.PI);
-
-    plane.geometry.verticesNeedUpdate = true;
-    plane.geometry.vertices[0].y = baseVertix[0].y + controls.vertex;
-    plane.geometry.vertices[1].y = baseVertix[1].y + controls.vertex;
+    instance.update();
 
     requestAnimationFrame(render);
     renderer.render(scene, camera);
