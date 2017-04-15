@@ -36,20 +36,24 @@ FractalPlane.prototype.getMesh = function() {
 }
 
 
+var scene;
+var camera;
+var renderer;
+
 function init() {
 
   // create a scene, that will hold all our elements such as objects, cameras and lights.
-  var scene = new THREE.Scene();
+  scene = new THREE.Scene();
 
   // create a camera, which defines where we're looking at.
-  var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.x = 0;
   camera.position.y = 0;
   camera.position.z = 180;
   camera.lookAt(scene.position);
 
   // create a render and set the size
-  var renderer = new THREE.WebGLRenderer();
+  renderer = new THREE.WebGLRenderer();
   renderer.setClearColor(new THREE.Color(0xEEEEEE));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -57,25 +61,8 @@ function init() {
   var axes = new THREE.AxisHelper(20);
   scene.add(axes);
 
-
-
-  var planeGeometry = new THREE.PlaneGeometry(4, 0);
-  var planeMaterial = new THREE.MeshBasicMaterial({color: 0xcccccc});
-  var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-  var baseVertix = [];
-  for(var i=0; i<2; i++){
-    baseVertix[i] = {
-      x: plane.geometry.vertices[i].x,
-      y: plane.geometry.vertices[i].y,
-      z: plane.geometry.vertices[i].z,
-    }
-  }
-  plane.position.y = 10;
-  scene.add(plane);
-
-  //addFractalPlane(scene);
+  
   var instance = new FractalPlane(20,40);
-  console.log(instance);
   scene.add(instance.getMesh());
 
   //-GUIの設定--------------------------------
@@ -93,9 +80,6 @@ function init() {
   // add the output of the renderer to the html element
   document.getElementById("WebGL-output").appendChild(renderer.domElement);
 
-  //console.log(plane.geometry);
-  //console.log(baseVertix);
-
   render();
   function render(){
 
@@ -110,3 +94,16 @@ function init() {
 
 }
 window.onload = init;
+
+
+function onResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+window.addEventListener('resize', onResize, false);
+
+
+
+
+
