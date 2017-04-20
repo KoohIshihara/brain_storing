@@ -3,6 +3,7 @@ var FractalPlane = function(_x, _y) {
   // コンストラクタ
   var planeGeometry = new THREE.PlaneGeometry(10, 0);
   var planeMaterial = new THREE.MeshBasicMaterial({color: 0xcccccc});
+  planeMaterial.side = THREE.DoubleSide; // 背面の処理増加するよ。
   var plane = new THREE.Mesh(planeGeometry, planeMaterial);
   plane.position.x = _x;
   plane.position.y = _y;
@@ -19,6 +20,16 @@ var FractalPlane = function(_x, _y) {
   this.maxHeight = 40;
   this.baseVertix = baseVertix; // [0] [1] が上の辺
   this.mesh = plane;
+  this.mesh.position.y = 20;
+  this.mesh.rotation.z = -Math.PI/4;
+  this.nextPos = {x: 0, y: 0};
+
+  /*
+  var testGeo = new THREE.PlaneGeometry(4, 4);
+  var testMat = new THREE.MeshBasicMaterial({color: 0xcc0000});
+  this.testMesh = new THREE.Mesh(testGeo, testMat);
+  scene.add(this.testMesh);
+  */
 }
 
 FractalPlane.prototype.update = function() {
@@ -27,8 +38,13 @@ FractalPlane.prototype.update = function() {
     this.nowHeight+=0.1;
     this.mesh.geometry.vertices[0].y = this.baseVertix[0].y + this.nowHeight;
     this.mesh.geometry.vertices[1].y = this.baseVertix[1].y + this.nowHeight;
-    this.mesh.rotation.z += 0.1;
+    this.nextPos.x = this.mesh.position.x - this.nowHeight*Math.sin(this.mesh.rotation.z);
+    this.nextPos.y = this.mesh.position.y + this.nowHeight*Math.cos(this.mesh.rotation.z);
   }
+  /*
+  this.testMesh.position.x = this.nextPos.x;
+  this.testMesh.position.y = this.nextPos.y;
+  */
 }
 
 FractalPlane.prototype.getMesh = function() {
@@ -62,7 +78,7 @@ function init() {
   scene.add(axes);
 
   
-  var instance = new FractalPlane(20,40);
+  var instance = new FractalPlane(0,0);
   scene.add(instance.getMesh());
 
   //-GUIの設定--------------------------------
