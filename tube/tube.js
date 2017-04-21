@@ -1,59 +1,65 @@
 var BranchTube = function(_points){
   // コンストラクタ
-  /*
-  var points = [];
-  for (var i = 0; i < 4; i++) {
-    var randomX = -20 + Math.round(Math.random() * 50);
-    var randomY = -15 + Math.round(Math.random() * 40);
-    var randomZ = -20 + Math.round(Math.random() * 40);
-    points.push(new THREE.Vector3(randomX, randomY, randomZ));
-  }
-  */
-
+  this.points = _points;
+  this.radius = 0.0;
+  //(points, segments, radius, radiusSegments, closed, taper)
   var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(_points), 64, 1, 8, false);
-  var meshMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00, transparent: true, opacity: 0.2});
-  var wireFrameMat = new THREE.MeshBasicMaterial();
-  wireFrameMat.wireframe = true;
-  this.mesh = THREE.SceneUtils.createMultiMaterialObject(tubeGeometry, [meshMaterial, wireFrameMat]);
+  var material = new THREE.MeshBasicMaterial();
+  material.wireframe = true;
+  this.mesh = new THREE.Mesh(tubeGeometry, material);
 }
 
 BranchTube.prototype.getMesh = function(){
   return this.mesh;
 }
 
+BranchTube.prototype.update = function(){
+  this.points[1].y += 0.1;
+  this.radius += 0.004;
+  this.mesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 64, this.radius, 8, false);
+  this.mesh.rotation.y += 0.001;
+  this.mesh.rotation.z += 0.001;
+}
+
+var scene;
+var camera;
+var webGLRenderer;
 
 function init() {
 
   var stats = initStats();
 
-  var scene = new THREE.Scene();
+  scene = new THREE.Scene();
 
   var axes = new THREE.AxisHelper(20);
   scene.add(axes);
 
-  var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-  var webGLRenderer = new THREE.WebGLRenderer();
-  webGLRenderer.setClearColor(new THREE.Color(0xEEEEEE));
+  webGLRenderer = new THREE.WebGLRenderer();
+  webGLRenderer.setClearColor(new THREE.Color(0x777777));
   webGLRenderer.setSize(window.innerWidth, window.innerHeight);
   webGLRenderer.shadowMap.enabled = true;
 
-  camera.position.z = 50;
+  camera.position.z = 100;
   camera.lookAt(new THREE.Vector3(0, 0, 0));
 
   document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
 
   points = [];
   points.push(new THREE.Vector3(0, 0, 0));
-  points.push(new THREE.Vector3(0, 20, 0));
+  points.push(new THREE.Vector3(0, 0, 0));
 
   var instance = new BranchTube(points);
   scene.add(instance.getMesh());
+  console.log(instance.getMesh());
 
   render();
 
   function render() {
     stats.update();
+
+    instance.update();
 
     requestAnimationFrame(render);
     webGLRenderer.render(scene, camera);
@@ -74,3 +80,13 @@ function init() {
   }
 }
 window.onload = init;
+
+
+function onResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+}
+window.addEventListener('resize', onResize, false);
+
+
