@@ -1,7 +1,7 @@
 // FractalPlaneクラス
 var FractalPlane = function(_x, _y) {
   // コンストラクタ
-  var planeGeometry = new THREE.PlaneGeometry(10, 0);
+  var planeGeometry = new THREE.PlaneGeometry(10, 40);
   var planeMaterial = new THREE.MeshBasicMaterial({color: 0xcccccc});
   planeMaterial.side = THREE.DoubleSide; // 背面の処理増加するよ。
   var plane = new THREE.Mesh(planeGeometry, planeMaterial);
@@ -21,7 +21,7 @@ var FractalPlane = function(_x, _y) {
   this.baseVertix = baseVertix; // [0] [1] が上の辺
   this.mesh = plane;
   this.mesh.position.y = 20;
-  this.mesh.rotation.z = -Math.PI/4;
+  this.mesh.rotation.z = Math.PI/4;
   this.nextPos = {x: 0, y: 0};
 
   /*
@@ -73,6 +73,11 @@ function init() {
   renderer.setClearColor(new THREE.Color(0xEEEEEE));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
+  var projector = new THREE.Projector();
+  document.addEventListener('mousedown', onDocumentMouseDown, false);
+
+  var raycaster;
+
   // show axes in the screen
   var axes = new THREE.AxisHelper(20);
   scene.add(axes);
@@ -105,8 +110,22 @@ function init() {
     renderer.render(scene, camera);
   }
 
-  // render the scene
-  renderer.render(scene, camera);
+  function onDocumentMouseDown(event) {
+    
+    var vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5);
+    vector = vector.unproject(camera);
+
+    raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+    var intersects = raycaster.intersectObjects([instance.getMesh()]);
+
+    if (intersects.length > 0) {
+      console.log(intersects[0]);
+    }else{
+      console.log('none');
+    }
+    
+  }
 
 }
 window.onload = init;
