@@ -1,21 +1,28 @@
 var BranchTube = function(_pos, _points, _branchNum){
-  console.log(_pos);
   // コンストラクタ
   this.points = _points;
   this.branchNum = _branchNum;
   this.radius = 0.0;
-  this.maxHeight = 20;
+  this.maxHeight = 14;
   //(points, segments, radius, radiusSegments, closed, taper)
-  var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(_points), 64, 1, 8, false);
+  var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(_points), 32, 1, 8, false);
   var material = new THREE.MeshBasicMaterial();
+  material.color = new THREE.Color( 0x999999 );
   material.wireframe = true;
+  material.wireframeLinewidth = 0.1;
+  console.log(material);
   this.mesh = new THREE.Mesh(tubeGeometry, material);
   this.mesh.position.x = _pos.x;
   this.mesh.position.y = _pos.y;
   this.mesh.branchNum = _branchNum;
 
-  var testRadius = 
-  this.mesh.rotation.z = Math.PI/4;
+  var test = Math.random()-0.5;
+  var testRan = ( Math.random() * ( ( 20 + 1 ) - 4 ) ) + 4;
+  if(test<0){
+    this.mesh.rotation.z = Math.PI/testRan;
+  }else{
+    this.mesh.rotation.z = -Math.PI/testRan;
+  }
   this.nextPos = {x: 0, y: 0};
 }
 
@@ -27,7 +34,7 @@ BranchTube.prototype.update = function(){
   if (this.points[1].y < this.maxHeight) {
     this.points[1].y += 0.1;
     this.radius += 0.002; // これifの処理わけてもいいかもね
-    this.mesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 64, this.radius, 8, false);
+    this.mesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 32, this.radius, 8, false);
     this.nextPos.x = this.mesh.position.x - this.points[1].y*Math.sin(this.mesh.rotation.z);
     this.nextPos.y = this.mesh.position.y + this.points[1].y*Math.cos(this.mesh.rotation.z);
   }
@@ -39,6 +46,8 @@ var webGLRenderer;
 
 function init() {
 
+  var clock = new THREE.Clock();
+
   var stats = initStats();
 
   scene = new THREE.Scene();
@@ -49,12 +58,20 @@ function init() {
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
   webGLRenderer = new THREE.WebGLRenderer();
-  webGLRenderer.setClearColor(new THREE.Color(0x777777));
+  webGLRenderer.setClearColor(new THREE.Color(0xFFFFFF));
   webGLRenderer.setSize(window.innerWidth, window.innerHeight);
   webGLRenderer.shadowMap.enabled = true;
 
-  camera.position.z = 300;
-  camera.lookAt(new THREE.Vector3(0, 0, 0));
+  camera.position.z = 200;
+  camera.lookAt(new THREE.Vector3(0, 20, 0));
+
+  var trackballControls = new THREE.TrackballControls(camera);
+  trackballControls.rotateSpeed = 1.0;
+  trackballControls.zoomSpeed = 1.0;
+  trackballControls.panSpeed = 1.0;
+  trackballControls.staticMoving = true;
+  trackballControls.target.set(0,40,0);
+
 
   var projector = new THREE.Projector();
   document.addEventListener('mousedown', onDocumentMouseDown, false);
@@ -74,13 +91,13 @@ function init() {
 
   function render() {
     stats.update();
-
-    //branch.update();
+    var delta = clock.getDelta();
 
     for(var i=0; i<branches_array.length; i++){
       branches_array[i].update();
     }
 
+    trackballControls.update(delta);
     requestAnimationFrame(render);
     webGLRenderer.render(scene, camera);
   }
