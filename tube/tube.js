@@ -23,6 +23,13 @@ var BranchTube = function(_pos, _points, _branchNum){
   }else{
     this.mesh.rotation.z = -Math.PI/testRan;
   }
+  var test2 = Math.random()-0.5;
+  if(test2<0){
+    this.mesh.rotation.y = Math.PI/testRan;
+  }else{
+    this.mesh.rotation.y = -Math.PI/testRan;
+  }
+  
   this.nextPos = {x: 0, y: 0};
 }
 
