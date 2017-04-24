@@ -14,6 +14,7 @@ var BranchTube = function(_pos, _points, _branchNum){
   this.mesh = new THREE.Mesh(tubeGeometry, material);
   this.mesh.position.x = _pos.x;
   this.mesh.position.y = _pos.y;
+  this.mesh.position.z = _pos.z;
   this.mesh.branchNum = _branchNum;
 
   var test = Math.random()-0.5;
@@ -23,14 +24,16 @@ var BranchTube = function(_pos, _points, _branchNum){
   }else{
     this.mesh.rotation.z = -Math.PI/testRan;
   }
+  /*
   var test2 = Math.random()-0.5;
   if(test2<0){
-    this.mesh.rotation.y = Math.PI/testRan;
+    this.mesh.rotation.x = Math.PI/testRan;
   }else{
-    this.mesh.rotation.y = -Math.PI/testRan;
-  }
+    this.mesh.rotation.x = -Math.PI/testRan;
+  }*/
   
-  this.nextPos = {x: 0, y: 0};
+  this.nextPos = {x: 0, y: 0, z:0};
+  this.testIs = true;
 }
 
 BranchTube.prototype.getMesh = function(){
@@ -43,8 +46,17 @@ BranchTube.prototype.update = function(){
     this.radius += 0.002; // これifの処理わけてもいいかもね
     this.mesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 32, this.radius, 8, false);
     this.nextPos.x = this.mesh.position.x - this.points[1].y*Math.sin(this.mesh.rotation.z);
+    //this.nextPos.y = this.mesh.position.y + this.points[1].y*Math.cos(this.mesh.rotation.x);
     this.nextPos.y = this.mesh.position.y + this.points[1].y*Math.cos(this.mesh.rotation.z);
+    //this.nextPos.z = this.mesh.position.z + this.points[1].y*Math.cos(this.mesh.rotation.y);
+    this.nextPos.z = 0;
+  }else{
+    if(this.testIs){
+      console.log(this.points[1].y);
+      this.testIs = false;
+    }
   }
+  //this.mesh.rotation.y += 0.1;
 }
 
 var scene;
@@ -86,7 +98,7 @@ function init() {
   document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
 
   var branches_array = [];
-  var pos = {x: 0, y: 0};
+  var pos = {x: 0, y: 0, z: 0};
   var points = [];
   points.push(new THREE.Vector3(0, 0, 0));
   points.push(new THREE.Vector3(0, 0, 0));
