@@ -5,9 +5,10 @@ var BranchTube = function(_pos, _points, _euler, _branchNum){
   this.radius = 0.0;
   
 
-  this.maxHeight = 14;
-  //var text = prompt("Type Texts");
-  //this.maxHeight = text.length;
+  //this.maxHeight = 14;
+  var text = prompt("Type Texts");
+  this.maxHeight = text.length;
+
 
   //(points, segments, radius, radiusSegments, closed, taper)
   var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(_points), 32, 1, 8, false);
@@ -19,8 +20,8 @@ var BranchTube = function(_pos, _points, _euler, _branchNum){
   this.mesh.position.x = _pos.x;
   this.mesh.position.y = _pos.y;
   this.mesh.position.z = _pos.z;
-  this.mesh.rotation.x = _euler.x;
-  this.mesh.rotation.z = _euler.z;
+  //this.mesh.rotation.x = _euler.x;
+  //this.mesh.rotation.z = _euler.z;
   this.mesh.branchNum = _branchNum;
 
   //console.log(_euler.x);
@@ -44,8 +45,7 @@ var BranchTube = function(_pos, _points, _euler, _branchNum){
     //console.log('z '+testRan);
   }
   //console.log('z '+this.mesh.rotation.z/Math.PI);
-  //console.log(this.mesh.rotation);
-  //debugger;
+  
 
   /*
   var testRan;
@@ -78,6 +78,8 @@ var BranchTube = function(_pos, _points, _euler, _branchNum){
     this.mesh.rotation.y = -Math.PI/testRan;
   }
   */
+
+  
   
   //this.mesh.rotation.x = Math.PI/6;
   //this.mesh.rotation.z = Math.PI/6;
@@ -103,9 +105,9 @@ BranchTube.prototype.update = function(){
     var theta = Math.PI/2 - this.mesh.rotation.x;
     var phi = Math.PI/2 - this.mesh.rotation.z;
     
-    this.nextPos.x = this.mesh.position.x + -r*Math.sin(theta)*Math.cos(phi);
-    this.nextPos.y = this.mesh.position.y + r*Math.sin(theta)*Math.sin(phi);
-    this.nextPos.z = this.mesh.position.z + r*Math.cos(theta);
+    this.nextPos.x = this.mesh.position.x + -r*Math.sin(theta)*Math.cos(phi); // Good
+    this.nextPos.y = this.mesh.position.y + r*Math.sin(theta)*Math.sin(phi); // Good
+    this.nextPos.z = this.mesh.position.z + r*Math.cos(theta); // theta
     
 
     /*
@@ -125,10 +127,7 @@ BranchTube.prototype.update = function(){
       var axes = new THREE.AxisHelper(20);
       axes.position.x = this.nextPos.x;
       axes.position.y = this.nextPos.y;
-      axes.position.z = this.nextPos.z;
-      axes.rotation.x = this.mesh.rotation.x;
-      axes.rotation.y = this.mesh.rotation.y;
-      axes.rotation.z = this.mesh.rotation.z;
+      axes.position.z = this.nextPos.z;      
       scene.add(axes);
       */
     }
@@ -183,7 +182,7 @@ function init() {
   var points = [];
   points.push(new THREE.Vector3(0, 0, 0));
   points.push(new THREE.Vector3(0, 0, 0));
-  var euler = {x:0,y:0,z:0}//THREE.Euler;
+  var euler = THREE.Euler;
   var branch = new BranchTube(pos, points, euler, branches_array.length);
   branches_array.push(branch);
   scene.add(branch.getMesh());
@@ -221,7 +220,7 @@ function init() {
       points.push(new THREE.Vector3(0, 0, 0));
       points.push(new THREE.Vector3(0, 0, 0));
       var branchNum = branches_array.length;
-      //console.log(mesh.rotation);
+      console.log(mesh.rotation);
       var euler = mesh.rotation;
       var branch = new BranchTube(pos, points, euler, branchNum);
       branches_array.push(branch);
