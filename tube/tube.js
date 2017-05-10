@@ -19,33 +19,26 @@ var BranchTube = function(_pos, _points, _euler, _branchNum){
   this.mesh.position.x = _pos.x;
   this.mesh.position.y = _pos.y;
   this.mesh.position.z = _pos.z;
-  this.mesh.rotation.x = _euler.x;
-  this.mesh.rotation.z = _euler.z;
+  //this.mesh.rotation.x = _euler.x;
+  //this.mesh.rotation.z = _euler.z;
   this.mesh.branchNum = _branchNum;
 
-  //console.log(_euler.x);
-  //console.log(_euler.z);
-  //console.log(this.mesh.rotation.x);
+  this.preEuler = _euler;
 
   // 四方向のみの分岐
-  
   var testRan;
   while(true){
-    testRan = (Math.random()*2-1.0)*20;
-    if (testRan>4 || -4>testRan) break;
+    testRan = (Math.random()*2-1.0)*20; // -20~20
+    if (testRan>4 || -4>testRan) break; // -20~-4 or 4~20
   }
   var test = Math.random()-0.5;
 
   if(test < 0){
-    this.mesh.rotation.x += Math.PI/testRan; 
-    //console.log('x '+testRan);
+    this.mesh.rotation.x = Math.PI/testRan + _euler.x; 
   }else{
-    this.mesh.rotation.z += Math.PI/testRan;
-    //console.log('z '+testRan);
+    this.mesh.rotation.z = Math.PI/testRan + _euler.z;
   }
-  //console.log('z '+this.mesh.rotation.z/Math.PI);
-  //console.log(this.mesh.rotation);
-  //debugger;
+  //this.mesh.rotation.y = _euler.y;
 
   /*
   var testRan;
@@ -100,6 +93,12 @@ BranchTube.prototype.update = function(){
     //this.nextPos.y = this.mesh.position.y + this.points[1].y*Math.cos(this.mesh.rotation.z);
     
     var r = this.maxHeight;
+    /*
+    var preRotation = this.preEuler;
+    var theta = Math.PI/2 - preRotation.x;
+    var phi = Math.PI/2 - preRotation.z;
+    */
+    
     var theta = Math.PI/2 - this.mesh.rotation.x;
     var phi = Math.PI/2 - this.mesh.rotation.z;
     
