@@ -7,9 +7,9 @@ var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
   this.radius = 0.0;
   
 
-  this.maxHeight = 14;
-  //var text = prompt("Type Texts");
-  //this.maxHeight = text.length;
+  //this.maxHeight = 14;
+  this.text = prompt('Type Texts', 'But I did not think so.');
+  this.maxHeight = this.text.length;
 
   //(points, segments, radius, radiusSegments, closed, taper)
   var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(_points), 32, 1, 8, false);
@@ -30,6 +30,13 @@ var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
     first = false;
   }else{
     this.preEuler = branches_array[_preBranchNum].mesh.rotation;
+
+    // テキストに応じて角度を設定
+    analyzer.contradictory.search(this.text, this.mesh);
+    this.mesh.rotation.y += this.preEuler.y;
+    this.mesh.rotation.z += this.preEuler.z;
+
+    /*
     // 四方向のみの分岐
     var testRan;
     while(true){
@@ -39,10 +46,11 @@ var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
     var test = Math.random()-0.5;
 
     if(test < 0){
-      this.mesh.rotation.x = Math.PI/testRan + this.preEuler.x; 
+      this.mesh.rotation.y = Math.PI/testRan + this.preEuler.x; 
     }else{
       this.mesh.rotation.z = Math.PI/testRan + this.preEuler.z;
     }
+    */
   }
 
   //this.mesh.rotation.y = _euler.y;
@@ -65,11 +73,6 @@ BranchTube.prototype.update = function(){
     //this.nextPos.x = this.mesh.position.x - this.points[1].y*Math.sin(this.mesh.rotation.z);
     //this.nextPos.y = this.mesh.position.y + this.points[1].y*Math.cos(this.mesh.rotation.z);
     
-    /*
-    var preRotation = this.preEuler;
-    var theta = Math.PI/2 - preRotation.x;
-    var phi = Math.PI/2 - preRotation.z;
-    */
     var r = this.maxHeight;    
     var theta = Math.PI/2 - this.mesh.rotation.x;
     var phi = Math.PI/2 - this.mesh.rotation.z;
