@@ -1,4 +1,6 @@
-var BranchTube = function(_pos, _points, _euler, _branchNum){
+var branches_array = [];
+
+var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
   // コンストラクタ
   this.points = _points;
   this.branchNum = _branchNum;
@@ -23,57 +25,27 @@ var BranchTube = function(_pos, _points, _euler, _branchNum){
   //this.mesh.rotation.z = _euler.z;
   this.mesh.branchNum = _branchNum;
 
-  this.preEuler = _euler;
-
-  // 四方向のみの分岐
-  var testRan;
-  while(true){
-    testRan = (Math.random()*2-1.0)*20; // -20~20
-    if (testRan>4 || -4>testRan) break; // -20~-4 or 4~20
-  }
-  var test = Math.random()-0.5;
-
-  if(test < 0){
-    this.mesh.rotation.x = Math.PI/testRan + _euler.x; 
+  if(_isFirst){
+    this.preEuler = {x:0,y:0,z:0};
+    first = false;
   }else{
-    this.mesh.rotation.z = Math.PI/testRan + _euler.z;
+    this.preEuler = branches_array[_preBranchNum].mesh.rotation;
+    // 四方向のみの分岐
+    var testRan;
+    while(true){
+      testRan = (Math.random()*2-1.0)*40; // -20~20
+      if (testRan>4 || -4>testRan) break; // -20~-4 or 4~20
+    }
+    var test = Math.random()-0.5;
+
+    if(test < 0){
+      this.mesh.rotation.x = Math.PI/testRan + this.preEuler.x; 
+    }else{
+      this.mesh.rotation.z = Math.PI/testRan + this.preEuler.z;
+    }
   }
+
   //this.mesh.rotation.y = _euler.y;
-
-  /*
-  var testRan;
-  while(true){
-    testRan = (Math.random()*2-1.0)*20;
-    if (testRan>4 || -4>testRan) break;
-  }
-  var test = Math.random()-0.5;
-
-  var testRan = (Math.random()*((20+1)-4)) + 4; // 4~20
-  if(test<0){
-    this.mesh.rotation.x = Math.PI/testRan;
-  }else{
-    this.mesh.rotation.x = -Math.PI/testRan;
-  }
-
-  var test3 = Math.random()-0.5;
-  if(test3<0){
-    this.mesh.rotation.z = Math.PI/testRan;
-  }else{
-    this.mesh.rotation.z = -Math.PI/testRan;
-  }
-  */
-
-  /*
-  var test2 = Math.random()-0.5;
-  if(test2<0){
-    this.mesh.rotation.y = Math.PI/testRan;
-  }else{
-    this.mesh.rotation.y = -Math.PI/testRan;
-  }
-  */
-  
-  //this.mesh.rotation.x = Math.PI/6;
-  //this.mesh.rotation.z = Math.PI/6;
 
   this.nextPos = {x: 0, y: 0, z:0};
   this.testIs = true;
@@ -89,37 +61,26 @@ BranchTube.prototype.update = function(){
     this.radius += 0.008; // これifの処理わけてもいいかもね
     this.mesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 32, this.radius, 8, false);
     
+    // 2次元用
     //this.nextPos.x = this.mesh.position.x - this.points[1].y*Math.sin(this.mesh.rotation.z);
     //this.nextPos.y = this.mesh.position.y + this.points[1].y*Math.cos(this.mesh.rotation.z);
     
-    var r = this.maxHeight;
     /*
     var preRotation = this.preEuler;
     var theta = Math.PI/2 - preRotation.x;
     var phi = Math.PI/2 - preRotation.z;
     */
-    
+    var r = this.maxHeight;    
     var theta = Math.PI/2 - this.mesh.rotation.x;
     var phi = Math.PI/2 - this.mesh.rotation.z;
     
     this.nextPos.x = this.mesh.position.x + -r*Math.sin(theta)*Math.cos(phi);
     this.nextPos.y = this.mesh.position.y + r*Math.sin(theta)*Math.sin(phi);
     this.nextPos.z = this.mesh.position.z + r*Math.cos(theta);
-    
 
-    /*
-    var angle = this.mesh.rotation.x;
-    var angle2 = this.mesh.rotation.z;
-    this.nextPos.x = Math.cos(angle) * Math.cos(angle2) * r;
-    this.nextPos.y = Math.cos(angle) * Math.sin(angle2) * r;
-    this.nextPos.z = Math.sin(angle) * r;
-    */
   }else{
     if(this.testIs){
-      //console.log(this.points[1].y);
       this.testIs = false;
-      //console.log(this.nextPos);
-      //console.log(this.mesh);
       /*
       var axes = new THREE.AxisHelper(20);
       axes.position.x = this.nextPos.x;
@@ -177,13 +138,13 @@ function init() {
 
   document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
 
-  var branches_array = [];
+  // branches_arrayはグローバルに宣言
   var pos = {x: 0, y: 0, z: 0};
   var points = [];
   points.push(new THREE.Vector3(0, 0, 0));
   points.push(new THREE.Vector3(0, 0, 0));
-  var euler = {x:0,y:0,z:0}//THREE.Euler;
-  var branch = new BranchTube(pos, points, euler, branches_array.length);
+  var euler = {x:0,y:0,z:0};
+  var branch = new BranchTube(pos, points, branches_array.length, 0, true);
   branches_array.push(branch);
   scene.add(branch.getMesh());
 
@@ -220,9 +181,8 @@ function init() {
       points.push(new THREE.Vector3(0, 0, 0));
       points.push(new THREE.Vector3(0, 0, 0));
       var branchNum = branches_array.length;
-      //console.log(mesh.rotation);
-      var euler = mesh.rotation;
-      var branch = new BranchTube(pos, points, euler, branchNum);
+      var preBranchNum = mesh.branchNum;
+      var branch = new BranchTube(pos, points, branchNum, preBranchNum, false);
       branches_array.push(branch);
       scene.add(branches_array[branchNum].getMesh());
     }else{
