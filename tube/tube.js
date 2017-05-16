@@ -7,9 +7,9 @@ var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
   this.radius = 0.0;
   
 
-  //this.maxHeight = 14;
-  this.text = prompt('Type Texts', 'But I did not think so.');
-  this.maxHeight = this.text.length;
+  this.maxHeight = 14;
+  //this.text = prompt('Type Texts', 'But I did not think so.');
+  //this.maxHeight = this.text.length;
 
   //(points, segments, radius, radiusSegments, closed, taper)
   var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(_points), 32, 1, 8, false);
@@ -39,25 +39,27 @@ var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
     this.preEuler = branches_array[_preBranchNum].mesh.rotation;
 
     // テキストに応じて角度を設定
-    analyzer.contradictory.search(this.text, this.mesh);
+    /*
+    analyzer.contradictory.search(this.text, this.mesh, this.preEuler);
     this.mesh.rotation.y += this.preEuler.y;
     this.mesh.rotation.z += this.preEuler.z;
-
-    /*
-    // 四方向のみの分岐
+    */
+    
+    // 四方向分岐
+    
     var testRan;
     while(true){
-      testRan = (Math.random()*2-1.0)*40; // -20~20
+      testRan = (Math.random()*2-1.0)*20; // -20~20
       if (testRan>4 || -4>testRan) break; // -20~-4 or 4~20
     }
     var test = Math.random()-0.5;
-
     if(test < 0){
-      this.mesh.rotation.y = Math.PI/testRan + this.preEuler.x; 
+      this.mesh.rotation.x = Math.PI/testRan + this.preEuler.x; 
     }else{
       this.mesh.rotation.z = Math.PI/testRan + this.preEuler.z;
     }
-    */
+    
+    
   }
 
   //this.mesh.rotation.y = _euler.y;
@@ -100,7 +102,7 @@ BranchTube.prototype.update = function(){
   }else{
     if(this.testIs){
       this.testIs = false;
-      /*
+      
       var axes = new THREE.AxisHelper(20);
       axes.position.x = this.nextPos.x;
       axes.position.y = this.nextPos.y;
@@ -109,7 +111,7 @@ BranchTube.prototype.update = function(){
       axes.rotation.y = this.mesh.rotation.y;
       axes.rotation.z = this.mesh.rotation.z;
       scene.add(axes);
-      */
+      
     }
   }
   /*
