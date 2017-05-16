@@ -37,7 +37,7 @@ var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
     first = false;
   }else{
     this.preEuler = branches_array[_preBranchNum].mesh.rotation;
-    debugger;
+
     // テキストに応じて角度を設定
     analyzer.contradictory.search(this.text, this.mesh);
     this.mesh.rotation.y += this.preEuler.y;
