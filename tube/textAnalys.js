@@ -1,9 +1,12 @@
 var analyzer = {
   contradictory: {},
+  convert: {},
 };
 
 
-analyzer.contradictory.keywords = ['But', 'but', 'However', 'however', 'Nevertheless', 'nevertheless', 'Despite', 'despite', 'In spite of', 'in spite of', 'Though', 'though', 'Although', 'although'];
+//analyzer.contradictory.keywords = ['But', 'but', 'However', 'however', 'Nevertheless', 'nevertheless', 'Despite', 'despite', 'In spite of', 'in spite of', 'Though', 'though', 'Although', 'although'];
+analyzer.contradictory.keywords = ['しかし', 'だが', 'けれども'];
+
 
 analyzer.contradictory.search = function(_text, _mesh){
   

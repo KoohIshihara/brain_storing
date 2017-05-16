@@ -23,15 +23,15 @@ function init() {
   var getTexture = function () {
 
     var canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
+    canvas.width = 128;
+    canvas.height = 128;
 
     var ctx = canvas.getContext('2d');
     // the body
-    ctx.font= '40px Century Gothic';
+    ctx.font= '80px Century Gothic';
     ctx.fillStyle = '#999';
     //ctx.textAlign = 'center';
-    ctx.fillText('test test test test',0,canvas.height/2);
+    ctx.fillText('tes',0,canvas.height/2);
 
     var texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
