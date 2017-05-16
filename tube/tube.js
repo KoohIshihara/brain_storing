@@ -18,6 +18,13 @@ var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
   material.wireframe = true;
   material.wireframeLinewidth = 0.1;
   this.mesh = new THREE.Mesh(tubeGeometry, material);
+
+  /*
+  var cylinderGeom = new THREE.CylinderGeometry(0, 1, 10, 8, 8, false, 0, 6.3);
+  this.mesh = new THREE.Mesh(cylinderGeom, material);
+  this.meshHeight = 0;
+  */
+
   this.mesh.position.x = _pos.x;
   this.mesh.position.y = _pos.y;
   this.mesh.position.z = _pos.z;
@@ -30,7 +37,7 @@ var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
     first = false;
   }else{
     this.preEuler = branches_array[_preBranchNum].mesh.rotation;
-
+    debugger;
     // テキストに応じて角度を設定
     analyzer.contradictory.search(this.text, this.mesh);
     this.mesh.rotation.y += this.preEuler.y;
@@ -64,11 +71,20 @@ BranchTube.prototype.getMesh = function(){
 }
 
 BranchTube.prototype.update = function(){
+  /*
+  this.mesh.geometry.applyMatrix( new THREE.Matrix4().makeTranslation(10, 0, 0));
+  this.mesh.rotation.z += 0.1;
+  this.mesh.position.y = 10;
+  this.meshHeight = 20;
+  this.mesh.geometry = new THREE.CylinderGeometry(0, 1, this.meshHeight, 8, 8, false, 0, 6.3);
+  this.mesh.geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0, 0 ));
+  */
   if (this.points[1].y < this.maxHeight) {
-    this.points[1].y += 0.4;
-    this.radius += 0.008; // これifの処理わけてもいいかもね
-    this.mesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 32, this.radius, 8, false);
     
+    this.points[1].y += 0.4;
+    this.radius += 0.006; // これifの処理わけてもいいかもね
+    this.mesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 32, this.radius, 8, false);
+
     // 2次元用
     //this.nextPos.x = this.mesh.position.x - this.points[1].y*Math.sin(this.mesh.rotation.z);
     //this.nextPos.y = this.mesh.position.y + this.points[1].y*Math.cos(this.mesh.rotation.z);
