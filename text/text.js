@@ -1,13 +1,85 @@
+var LeafSprite = function(_char ,_pos, _scale){
+
+  var self = this;
+  this.sprite;
+
+  // 文字列をテクスチャにして返す関数
+  var getTexture = function ( _char ) {
+    var canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    var ctx = canvas.getContext('2d');
+    // the body
+    ctx.font= '76px Century Gothic';
+    ctx.fillStyle = '#00f';
+    ctx.textAlign = 'center';
+    ctx.fillText(_char,canvas.width/2,canvas.height/2);
+
+    var texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+  };
+
+  var material = new THREE.SpriteMaterial({
+    map : getTexture(_char),
+    color : 0xFF0000,
+  });
+  var sprite = new THREE.Sprite(material);
+  sprite.position.set(_pos.x, _pos.y, _pos.z);
+  sprite.scale.set(_scale.x, _scale.y, _scale.z);
+
+  this.sprite = sprite;
+
+}
+
+LeafSprite.prototype.getSprite = function(){
+  return this.sprite;
+}
+
+
+var TextLeaves = function(_text ,_pos, _scale){
+
+  var self = this;
+  this.text = _text;
+
+  this.text_array = [];
+
+  for(var i=0; i<_text.length; i++){
+
+    // カーニングの設定
+    var charPos;
+    var between = 0.4 * _scale.x;
+    var offsetX = _pos.x - (between*_text.length)/2;
+    charPos = {x:offsetX + i*between, y: _pos.y, z: _pos.z};
+
+    var charScale;
+    charScale = _scale;
+    
+    var leafSprite = new LeafSprite(_text[i], charPos, charScale);
+    this.text_array.push(leafSprite);
+    scene.add(leafSprite.getSprite());
+  }
+
+}
+
+TextLeaves.prototype.getSprite = function(){
+  //return this.sprite;
+  return this.text_array[0];
+}
+
+
+var scene;
+
 
 // once everything is loaded, we run our Three.js stuff.
 function init() {
 
-  var scene = new THREE.Scene();
+  scene = new THREE.Scene();
 
   var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
   var renderer = new THREE.WebGLRenderer();
-  renderer.setClearColor(new THREE.Color(0x999999));
+  renderer.setClearColor(new THREE.Color(0xFFFFFF));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   var axes = new THREE.AxisHelper(20);
@@ -20,7 +92,10 @@ function init() {
 
   document.getElementById("WebGL-output").appendChild(renderer.domElement);
 
-  var getTexture = function () {
+  var pos = {x:0, y:0, z:0};
+  var scale = {x:1, y:1, z:1};
+  /*
+  var getTexture = function ( _text ) {
 
     var canvas = document.createElement('canvas');
     canvas.width = 128;
@@ -29,32 +104,38 @@ function init() {
     var ctx = canvas.getContext('2d');
     // the body
     ctx.font= '80px Century Gothic';
-    ctx.fillStyle = '#999';
-    //ctx.textAlign = 'center';
-    ctx.fillText('tes',0,canvas.height/2);
+    ctx.fillStyle = '#00f';
+    ctx.textAlign = 'left';
+    ctx.fillText(_text,canvas.width/2,canvas.height/2);
 
     var texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
     return texture;
 
   };
-
-  createSprites();
-
-  function createSprites() {
-    var material = new THREE.SpriteMaterial({
-      map : getTexture(),
-      color : 0xFF0000,
-    });
-    var sprite = new THREE.Sprite(material);
-    sprite.position.set(0, 0, 0);
-    //sprite.scale.set(4, 4, 4);
-    scene.add(sprite);
+  createTextSprites('hoge', pos, scale);
+  function createTextSprites( _text, _pos, _scale ) {
+    for(var i=0; i<_text.length; i++){
+      var material = new THREE.SpriteMaterial({
+        map : getTexture(_text[i]),
+        color : 0xFF0000,
+      });
+      var sprite = new THREE.Sprite(material);
+      sprite.scale.set(_scale.x, _scale.y, _scale.z);
+      var between = 0.6 * sprite.scale.x;
+      var offsetX = pos.x - between*_text.length/2;
+      sprite.position.set(offsetX + i*between, pos.y, pos.z);
+      //sprite.scale.set(4, 4, 4);
+      scene.add(sprite);
+    }
   }
+  */
+
+  var textLeaves = new TextLeaves('hoge is fun', pos, scale);
+  scene.add(textLeaves.getSprite());
 
   render();
   function render(){
-
     requestAnimationFrame(render);
     renderer.render(scene, camera);
   }
