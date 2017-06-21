@@ -94,42 +94,6 @@ function init() {
 
   var pos = {x:0, y:0, z:0};
   var scale = {x:1, y:1, z:1};
-  /*
-  var getTexture = function ( _text ) {
-
-    var canvas = document.createElement('canvas');
-    canvas.width = 128;
-    canvas.height = 128;
-
-    var ctx = canvas.getContext('2d');
-    // the body
-    ctx.font= '80px Century Gothic';
-    ctx.fillStyle = '#00f';
-    ctx.textAlign = 'left';
-    ctx.fillText(_text,canvas.width/2,canvas.height/2);
-
-    var texture = new THREE.Texture(canvas);
-    texture.needsUpdate = true;
-    return texture;
-
-  };
-  createTextSprites('hoge', pos, scale);
-  function createTextSprites( _text, _pos, _scale ) {
-    for(var i=0; i<_text.length; i++){
-      var material = new THREE.SpriteMaterial({
-        map : getTexture(_text[i]),
-        color : 0xFF0000,
-      });
-      var sprite = new THREE.Sprite(material);
-      sprite.scale.set(_scale.x, _scale.y, _scale.z);
-      var between = 0.6 * sprite.scale.x;
-      var offsetX = pos.x - between*_text.length/2;
-      sprite.position.set(offsetX + i*between, pos.y, pos.z);
-      //sprite.scale.set(4, 4, 4);
-      scene.add(sprite);
-    }
-  }
-  */
 
   var textLeaves = new TextLeaves('hoge is fun', pos, scale);
   scene.add(textLeaves.getSprite());
