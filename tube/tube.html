@@ -20,16 +20,67 @@
       margin: 0;
       overflow: hidden;
     }
+    .button {
+      margin-left: 84px;
+    }
   </style>
 </head>
 <body>
+
+<input class="button" type="button" onclick="saveStorage();" value="save">
+<input class="button" type="button" onclick="resetStorage();" value="reset">
+
+<br>
 
 <div id="Stats-output"></div>
 
 <div id="WebGL-output"></div>
 
+
+<script type="text/javascript" src='./TextLeaves.js'></script>
+<script type="text/javascript" src='./BranchTube.js'></script>
+<script type="text/javascript" src='./TextBoad.js'></script>
+
 <script type="text/javascript" src='./textAnalys.js'></script>
 <script type="text/javascript" src="./tube.js"></script>
+
+<script type="text/javascript">
+
+var TestClass = function(){
+  this.text = 'test';
+  this.mesh = new THREE.Mesh();
+}
+
+BranchTube.prototype.getText = function(){
+  return this.text;
+}
+
+var testClass = new TestClass();
+
+  
+var saveStorage = function () {
+  //console.log(branches_array);
+  // JSONtoStr
+  /*
+  var branches_array_str = JSON.stringify(branches_array[0].mesh);
+  localStorage.setItem('branches_array_str', str_branches_array);
+  */
+
+  //console.log(testClass);
+  var test = [];
+  test[0] = {x:0, y:0};
+  //var test_str = JSON.stringify(test);
+  var test_str = JSON.stringify(branches_array);
+  localStorage.setItem('test', test_str);
+
+}
+
+var resetStorage = function(){
+  localStorage.clear();
+}
+
+</script>
+
 
 </body>
 </html>

@@ -1,3 +1,4 @@
+/*
 var LeafSprite = function(_char ,_pos, _scale){
 
   var self = this;
@@ -6,7 +7,7 @@ var LeafSprite = function(_char ,_pos, _scale){
   // 文字列をテクスチャにして返す関数
   var getTexture = function ( _char ) {
     var canvas = document.createElement('canvas');
-    canvas.width = 28;
+    canvas.width = 128;
     canvas.height = 128;
     var ctx = canvas.getContext('2d');
     // the body
@@ -66,10 +67,33 @@ TextLeaves.prototype.getSprite = function(){
   //return this.sprite;
   return this.text_array[0];
 }
+*/
 
+var getTexture = function ( _char ) {
+
+  var text_str = _char;
+
+  var canvas = document.createElement('canvas');
+  canvas.width = 64;
+  canvas.height = 64;
+  var ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#FFF';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // the body
+  ctx.font= '24px Century Gothic';
+  ctx.fillStyle = '#00f';
+  ctx.textAlign = 'left';
+  ctx.fillText(_char,0,canvas.height/2);
+
+  var texture = new THREE.Texture(canvas);
+  console.log(texture);
+  texture.needsUpdate = true;
+  return texture;
+};
 
 var scene;
-
 
 // once everything is loaded, we run our Three.js stuff.
 function init() {
@@ -92,11 +116,15 @@ function init() {
 
   document.getElementById("WebGL-output").appendChild(renderer.domElement);
 
-  var pos = {x:0, y:0, z:0};
-  var scale = {x:1, y:1, z:1};
+  var material = new THREE.SpriteMaterial({
+    map : getTexture('hge is'),
+    color : 0xFF0000,
+  });
+  var sprite = new THREE.Sprite(material);
+  console.log(sprite);
+  sprite.position.set(0,0,0);
 
-  var textLeaves = new TextLeaves('hoge is fun', pos, scale);
-  scene.add(textLeaves.getSprite());
+  scene.add(sprite);
 
   render();
   function render(){
