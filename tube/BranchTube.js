@@ -1,36 +1,62 @@
-var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
-  // コンストラクタ
-  this.points = _points;
-  this.branchNum = _branchNum;
-  this.radius = 0.1;
-  
+var parm
 
-  this.maxHeight = 14;
-  //this.text = prompt('Type Texts', 'But I did not think so.');
-  //this.maxHeight = this.text.length;
+var BranchTube = function(_paramerter, _isLoaded){
 
+  if(_isLoaded == true){
+    
+    this.load(_paramerter);
+
+  }else{
+    parm = _paramerter;
+    // コンストラクタ
+    this.pos = _paramerter.pos;
+    this.points = _paramerter.points;
+    this.branchNum = _paramerter.branchNum;
+    this.preBranchNum = _paramerter.preBranchNum;
+    this.isFirst = _paramerter.isFirst;
+
+    this.radius = 0.1;
+    this.maxRadius = 8;
+    this.maxHeight = 14;
+
+    this.nextPos = {x: 0, y: 0, z:0}; //updateで値が変化
+    this.text = 'this is fun, but he thinks that';
+
+    this.createMesh();
+    this.createSprite();
+
+  }// isLoaded else
+
+}
+
+BranchTube.prototype.getMesh = function(){
+  return this.mesh;
+}
+
+BranchTube.prototype.createMesh = function(){
   //(points, segments, radius, radiusSegments, closed, taper)
-  var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(_points), 32, 0, 4, false);
+  var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 16, 0.1, 4, false);
   var material = new THREE.MeshBasicMaterial();
   material.color = new THREE.Color( 0x999999 );
   material.wireframe = true;
   material.wireframeLinewidth = 0.1;
   this.mesh = new THREE.Mesh(tubeGeometry, material);
   // インスタンスの中にMeshをいれた状態でJSONテキスト化させようとするとエラーになる。
-
-  this.mesh.position.x = _pos.x;
-  this.mesh.position.y = _pos.y;
-  this.mesh.position.z = _pos.z;
+  this.mesh.position.x = this.pos.x;
+  this.mesh.position.y = this.pos.y;
+  this.mesh.position.z = this.pos.z;
   //this.mesh.rotation.x = _euler.x;
   //this.mesh.rotation.z = _euler.z;
-  this.mesh.branchNum = _branchNum;
+  this.mesh.branchNum = this.branchNum;
 
-  if(_isFirst){
+  if(this.isFirst){
     this.preEuler = {x:0,y:0,z:0};
-    first = false;
-  }else{
-    this.preEuler = branches_array[_preBranchNum].mesh.rotation;
 
+    // save用
+    this.meshRotation = new THREE.Euler();
+
+  }else{
+    this.preEuler = branches_array[this.preBranchNum].mesh.rotation;
     // テキストに応じて角度を設定
     //analyzer.contradictory.search(this.text, this.mesh, this.preEuler);
     //this.mesh.rotation.y += this.preEuler.y;
@@ -44,19 +70,20 @@ var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
     }
     var test = Math.random()-0.5;
     if(test < 0){
-      this.mesh.rotation.x = Math.PI/testRan + this.preEuler.x; 
+      this.mesh.rotation.x = Math.PI/testRan + this.preEuler.x;
     }else{
       this.mesh.rotation.z = Math.PI/testRan + this.preEuler.z;
     }
-    
+
+    // save用
+    this.meshRotation = this.mesh.rotation;
     
   }
 
   //this.mesh.rotation.y = _euler.y;
+}
 
-  this.nextPos = {x: 0, y: 0, z:0};
-  this.testIs = true;
-
+BranchTube.prototype.createSprite = function(){
   // テキスト系統
   var textPos = {};
   var r = this.maxHeight;
@@ -65,12 +92,6 @@ var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
   textPos.x = this.mesh.position.x + -r*Math.sin(theta)*Math.cos(phi);
   textPos.y = this.mesh.position.y + r*Math.sin(theta)*Math.sin(phi);
   textPos.z = this.mesh.position.z + r*Math.cos(theta);
-
-  /*
-  var textScale = {x:1.4, y:1.4, z:1.4};
-  var textLeaves = new TextLeaves('One day, hoge is fun', textPos, textScale);
-  scene.add(textLeaves.getSprite());
-  */
 
   var textBoardObject = new TextBoardObject({
     fontSize : 6, // [%]
@@ -81,7 +102,7 @@ var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
     fontName :"Times New Roman"
   });
 
-  textBoardObject.addTextLine('this is fun, but he thinks that');
+  textBoardObject.addTextLine(this.text);
   var sprite = textBoardObject.cleateSpriteObject();
 
   var textScale = {};
@@ -92,26 +113,16 @@ var BranchTube = function(_pos, _points, _branchNum, _preBranchNum, _isFirst){
   sprite.position.set(textPos.x, textPos.y, textPos.z);
   sprite.scale.set(textScale.x*0.1, textScale.y*0.1, textScale.z*0.1);
   scene.add(sprite);
-
-
-}
-
-BranchTube.prototype.getMesh = function(){
-  return this.mesh;
+  this.sprite = sprite;
 }
 
 BranchTube.prototype.update = function(){
-  
+ 
   if (this.points[1].y < this.maxHeight) {
     
     this.points[1].y += 0.4;
-    this.radius += 0.002; // これifの処理わけてもいいかもね
-    this.mesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 16, this.radius, 4, false);
+    this.mesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 16, 0.1, 4, false);
 
-    // 2次元用
-    //this.nextPos.x = this.mesh.position.x - this.points[1].y*Math.sin(this.mesh.rotation.z);
-    //this.nextPos.y = this.mesh.position.y + this.points[1].y*Math.cos(this.mesh.rotation.z);
-    
     var r = this.maxHeight;    
     var theta = Math.PI/2 - this.mesh.rotation.x;
     var phi = Math.PI/2 - this.mesh.rotation.z;
@@ -120,20 +131,99 @@ BranchTube.prototype.update = function(){
     this.nextPos.y = this.mesh.position.y + r*Math.sin(theta)*Math.sin(phi);
     this.nextPos.z = this.mesh.position.z + r*Math.cos(theta);
 
-  }else{
-    if(this.testIs){
-      this.testIs = false;
-      /*
-      var axes = new THREE.AxisHelper(20);
-      axes.position.x = this.nextPos.x;
-      axes.position.y = this.nextPos.y;
-      axes.position.z = this.nextPos.z;
-      axes.rotation.x = this.mesh.rotation.x;
-      axes.rotation.y = this.mesh.rotation.y;
-      axes.rotation.z = this.mesh.rotation.z;
-      scene.add(axes);
-      */
-    }
   }
 
+  if (this.radius < this.maxRadius) {
+//    this.radius += 0.002;
+  }
+  
 }
+
+
+BranchTube.prototype.popParamerter = function(){
+
+  // meshとspriteはJSON化できない。
+  var paramerter = {
+    pos: this.pos,
+    nextPos: this.nextPos,
+    points: this.points,
+    branchNum: this.branchNum,
+    preBranchNum: this.preBranchNum,
+    isFirst: this.isFirst,
+    radius: this.radius,
+    maxRadius: this.maxRadius,
+    maxHeight: this.maxHeight,
+    text: this.text,
+    //-
+    meshRotation: this.meshRotation,
+    nextPos: this.nextPos,
+    //mesh: this.mesh,   
+    //sprite: this.sprite,
+  }; 
+
+  return paramerter;
+  //presave_branches_array.push(paramerter);
+
+}
+
+var test = 0;
+BranchTube.prototype.load = function(_paramerter){
+  
+  // コンストラクタ
+  this.pos = _paramerter.pos;
+  this.nextPos = _paramerter.nextPos;
+  this.points = _paramerter.points;
+  this.branchNum = _paramerter.branchNum;
+  this.preBranchNum = _paramerter.preBranchNum;
+  this.isFirst = _paramerter.isFirst;
+  this.radius = _paramerter.radius;
+  this.maxRadius = _paramerter.maxRadius;
+  this.maxHeight = _paramerter.maxHeight;
+  this.text = _paramerter.text; 
+
+  this.meshRotation = _paramerter.meshRotation;
+
+  console.log(this.meshRotation);
+
+  this.points_three = [];
+  for(var i=0; i<this.points.length; i++){
+    var point = new THREE.Vector3(this.points[i].x, this.points[i].y, this.points[i].z);
+    this.points_three.push(point);
+  }
+  //(points, segments, radius, radiusSegments, closed, taper)
+  var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points_three), 16, this.radius, 4, false);
+  var material = new THREE.MeshBasicMaterial();
+  material.color = new THREE.Color( 0x999999 );
+  material.wireframe = true;
+  material.wireframeLinewidth = 0.1;
+  this.mesh = new THREE.Mesh(tubeGeometry, material);
+
+  this.mesh.position.x = this.pos.x;
+  this.mesh.position.y = this.pos.y;
+  this.mesh.position.z = this.pos.z;
+  this.mesh.branchNum = this.branchNum;
+  
+  if(this.isFirst){
+    this.preEuler = {x:0,y:0,z:0};
+    // save用
+    this.meshRotation = new THREE.Euler();
+  }else{
+    this.preEuler = branches_array[this.preBranchNum].mesh.rotation;
+    this.mesh.rotation.x = this.meshRotation._x;
+    this.mesh.rotation.y = this.meshRotation._y;
+    this.mesh.rotation.z = this.meshRotation._z;
+  }
+
+  this.createSprite();
+  //console.log(this.mesh);
+
+}
+
+function listArray(){
+  console.log(branches_array);
+}
+
+
+
+
+

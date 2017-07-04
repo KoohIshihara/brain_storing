@@ -28,7 +28,11 @@
 <body>
 
 <input class="button" type="button" onclick="saveStorage();" value="save">
+<input class="button" type="button" onclick="loadStorage();" value="load">
 <input class="button" type="button" onclick="resetStorage();" value="reset">
+<input class="button" type="button" onclick="listArray();" value="list">
+
+
 
 <br>
 
@@ -44,8 +48,11 @@
 <script type="text/javascript" src='./textAnalys.js'></script>
 <script type="text/javascript" src="./tube.js"></script>
 
+<script type="text/javascript" src="./manageStorage.js"></script>
+
 <script type="text/javascript">
 
+/*
 var TestClass = function(){
   this.text = 'test';
   this.mesh = new THREE.Mesh();
@@ -66,6 +73,7 @@ var saveStorage = function () {
   localStorage.setItem('branches_array_str', str_branches_array);
   */
 
+/*
   //console.log(testClass);
   var test = [];
   test[0] = {x:0, y:0};
@@ -78,6 +86,8 @@ var saveStorage = function () {
 var resetStorage = function(){
   localStorage.clear();
 }
+
+*/
 
 </script>
 

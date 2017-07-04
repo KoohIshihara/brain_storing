@@ -1,6 +1,5 @@
 var branches_array = [];
 
-
 var scene;
 var camera;
 var webGLRenderer;
@@ -45,7 +44,17 @@ function init() {
   points.push(new THREE.Vector3(0, 0, 0));
   points.push(new THREE.Vector3(0, 0, 0));
   var euler = {x:0,y:0,z:0};
-  var branch = new BranchTube(pos, points, branches_array.length, 0, true);
+
+  var paramerter = {
+    pos: pos,
+    points: points,
+    branchNum: branches_array.length,
+    preBranchNum: 0,
+    isFirst: true,
+  };
+
+  //var branch = new BranchTube(pos, points, branches_array.length, 0, true);
+  var branch = new BranchTube(paramerter);
   branches_array.push(branch);
   scene.add(branch.getMesh());
 
@@ -83,7 +92,15 @@ function init() {
       points.push(new THREE.Vector3(0, 0, 0));
       var branchNum = branches_array.length;
       var preBranchNum = mesh.branchNum;
-      var branch = new BranchTube(pos, points, branchNum, preBranchNum, false);
+
+      var paramerter = {
+        pos: pos,
+        points: points,
+        branchNum: branchNum,
+        preBranchNum: preBranchNum,
+        isFirst: false,
+      };
+      var branch = new BranchTube(paramerter);
       branches_array.push(branch);
       scene.add(branches_array[branchNum].getMesh());
     }else{
