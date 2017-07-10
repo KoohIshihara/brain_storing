@@ -23,6 +23,8 @@ var TextBoardCanvas = function( parameter ){
  
     this._lineHeight = 0;
     this.textLines = [];
+
+    this.strColor = "#" + parameter.strColor || "#000000";
  
     this.init();
  
@@ -78,8 +80,8 @@ TextBoardCanvas.prototype.setTextColor = function( r, g, b, a ){
     this.textColor.b = b || 0;
     this.textColor.a = a || 0;
  
-    this.canvas.context.fillStyle = "rgba(" + 255 * this.textColor.r + " ," + 255 * this.textColor.g + " ," + 255 * this.textColor.b + " ," +  this.textColor.a + ")";
- 
+    //this.canvas.context.fillStyle = "rgba(" + 255 * this.textColor.r + " ," + 255 * this.textColor.g + " ," + 255 * this.textColor.b + " ," +  this.textColor.a + ")";
+    this.canvas.context.fillStyle = this.strColor;
 }
 //文字サイズの設定
 TextBoardCanvas.prototype.setFontSize = function( size ){

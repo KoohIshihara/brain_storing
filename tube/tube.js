@@ -12,13 +12,13 @@ function init() {
 
   scene = new THREE.Scene();
 
-  var axes = new THREE.AxisHelper(20);
-  scene.add(axes);
+  //var axes = new THREE.AxisHelper(20);
+  //scene.add(axes);
 
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
   webGLRenderer = new THREE.WebGLRenderer();
-  webGLRenderer.setClearColor(new THREE.Color(0xFFFFFF));
+  webGLRenderer.setClearColor(new THREE.Color(0x000000));
   webGLRenderer.setSize(window.innerWidth, window.innerHeight);
   webGLRenderer.shadowMap.enabled = true;
 
@@ -50,6 +50,7 @@ function init() {
     points: points,
     branchNum: branches_array.length,
     preBranchNum: 0,
+    depthLevel: 1,
     isFirst: true,
   };
 
@@ -92,17 +93,20 @@ function init() {
       points.push(new THREE.Vector3(0, 0, 0));
       var branchNum = branches_array.length;
       var preBranchNum = mesh.branchNum;
+      var depthLevel = branches_array[mesh.branchNum].depthLevel + 1;
 
       var paramerter = {
         pos: pos,
         points: points,
         branchNum: branchNum,
         preBranchNum: preBranchNum,
+        depthLevel: depthLevel,
         isFirst: false,
       };
       var branch = new BranchTube(paramerter);
       branches_array.push(branch);
       scene.add(branches_array[branchNum].getMesh());
+      console.log(mesh);
     }else{
       console.log('none');
     }

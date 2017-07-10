@@ -1,8 +1,9 @@
-var presave_branches_array = [];
 
 function saveStorage() {
 
   localStorage.clear()
+
+  var presave_branches_array = [];
 
   for(var i=0; i<branches_array.length; i++){
     var param = branches_array[i].popParamerter();
@@ -30,6 +31,7 @@ function loadStorage() {
     }
     
     branches_array = []; // branch_arrayをリセット
+    
     // paramをロードしてインスタンスを生成
     for(var i=0; i<loaded_params_array.length; i++){
       var param = loaded_params_array[i];
@@ -37,6 +39,28 @@ function loadStorage() {
       scene.add(branch.getMesh());
       branches_array.push(branch);
     }
+    
+    /*
+    var count = 0;
+    var rend = function(){
+      console.log('count:'+count);
+      var id = setTimeout(rend, 400); //再帰関数
+      //------------
+
+      var param = loaded_params_array[count];
+      var branch = new BranchTube(param, true);
+      scene.add(branch.getMesh());
+      branches_array.push(branch);
+
+      //------------
+      count++;
+      if(count+1 > loaded_params_array.length){
+        clearTimeout(id);
+        console.log('load completed');
+      }
+    }
+    rend();
+    */
     
   }else{
     console.log('no data');
@@ -50,4 +74,8 @@ function loadStorage() {
 
 function resetStorage() {
   localStorage.clear()
+}
+
+function listArray(){
+  console.log(branches_array);
 }
