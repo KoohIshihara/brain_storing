@@ -111,8 +111,8 @@ BranchTube.prototype.createSprite = function(){
   var color = this.mesh.material.color;
   var textBoardObject = new TextBoardObject({
     fontSize : 6, // [%]
-    textColor : {r: 0.4, g: 0, b: 0, a: 1},//文字色
-    backgroundColor : { r:0, g:0, b:0, a:0.01 },//背景色（RGBA値を0から１で指定）
+    textColor : {r: 0.4, g: 0, b: 0, a: 1},//これはつかってない！
+    backgroundColor : { r:1, g:1, b:1, a:0.01 },//背景色（RGBA値を0から１で指定）
     boardWidth : 128,  //マッピング対象平面オブジェクトの横幅
     boardHeight : 16, //マッピング対象平面オブジェクトの縦幅
     fontName :"Times New Roman",

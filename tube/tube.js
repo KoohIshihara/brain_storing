@@ -18,7 +18,7 @@ function init() {
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
   webGLRenderer = new THREE.WebGLRenderer();
-  webGLRenderer.setClearColor(new THREE.Color(0x000000));
+  webGLRenderer.setClearColor(new THREE.Color(0xffffff));
   webGLRenderer.setSize(window.innerWidth, window.innerHeight);
   webGLRenderer.shadowMap.enabled = true;
 
@@ -86,6 +86,7 @@ function init() {
     var intersects = raycaster.intersectObjects(objects_array);
 
     if (intersects.length > 0) {
+      console.log(intersects);
       var mesh = intersects[0].object;
       var pos = branches_array[mesh.branchNum].nextPos;
       var points = [];
