@@ -21,7 +21,7 @@ var BranchTube = function(_paramerter, _isLoaded){
     this.maxHeight = 14;
 
     this.nextPos = {x: 0, y: 0, z:0}; //updateで値が変化
-    this.text = 'this is fun, but he thinks that';
+    this.text = 'this is fun, but he thinks that'; //'物語の木test ';
 
     this.createMesh();
     this.createSprite();
@@ -115,7 +115,7 @@ BranchTube.prototype.createSprite = function(){
     backgroundColor : { r:1, g:1, b:1, a:0.01 },//背景色（RGBA値を0から１で指定）
     boardWidth : 128,  //マッピング対象平面オブジェクトの横幅
     boardHeight : 16, //マッピング対象平面オブジェクトの縦幅
-    fontName :"Times New Roman",
+    fontName : "Times New Roman", //'ＭＳ Ｐゴシック',
     strColor: color.getHexString(),
   });
 
@@ -130,6 +130,7 @@ BranchTube.prototype.createSprite = function(){
   
   sprite.position.set(textPos.x, textPos.y, textPos.z);
   sprite.scale.set((textScale.x*this.depthLevel*0.3)*0.08 ,(textScale.y*this.depthLevel*0.3)*0.08 , (textScale.z*this.depthLevel*0.3)*0.08);
+  sprite.branchNum = this.branchNum;
   scene.add(sprite);
   this.sprite = sprite;
 }

@@ -34,7 +34,8 @@ function init() {
 
 
   var projector = new THREE.Projector();
-  document.addEventListener('mousedown', onDocumentMouseDown, false);
+  //document.addEventListener('mousedown', onDocumentMouseDown, false);
+  document.addEventListener('mousedown', rayTest, false);
 
   document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
 
@@ -59,9 +60,13 @@ function init() {
   branches_array.push(branch);
   scene.add(branch.getMesh());
 
+  var raycaster = new THREE.Raycaster();
+  var mouse = new THREE.Vector2();
+
   render();
 
   function render() {
+
     stats.update();
     var delta = clock.getDelta();
 
@@ -74,6 +79,42 @@ function init() {
     webGLRenderer.render(scene, camera);
   }
 
+
+  function rayTest(event) {
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+    raycaster.setFromCamera( mouse, camera );
+    var intersects = raycaster.intersectObjects( scene.children );
+    if(intersects.length > 0){
+      objects_array = [];
+      for(var i=0; i < branches_array.length; i++) {
+        objects_array.push(branches_array[i].getMesh());
+      }
+      var mesh = intersects[0].object;
+      var pos = branches_array[mesh.branchNum].nextPos;
+      var points = [];
+      points.push(new THREE.Vector3(0, 0, 0));
+      points.push(new THREE.Vector3(0, 0, 0));
+      var branchNum = branches_array.length;
+      var preBranchNum = mesh.branchNum;
+      var depthLevel = branches_array[mesh.branchNum].depthLevel + 1;
+
+      var paramerter = {
+        pos: pos,
+        points: points,
+        branchNum: branchNum,
+        preBranchNum: preBranchNum,
+        depthLevel: depthLevel,
+        isFirst: false,
+      };
+      var branch = new BranchTube(paramerter);
+      branches_array.push(branch);
+      scene.add(branches_array[branchNum].getMesh());
+      console.log(mesh);
+    }
+  }
+  /*
   function onDocumentMouseDown(event) {
     var vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5);
     vector = vector.unproject(camera);
@@ -112,7 +153,7 @@ function init() {
       console.log('none');
     }
   }
-
+  */
   function initStats() {
     var stats = new Stats();
     stats.setMode(0); // 0: fps, 1: ms
