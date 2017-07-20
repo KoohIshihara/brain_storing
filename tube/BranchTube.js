@@ -16,12 +16,19 @@ var BranchTube = function(_paramerter, _isLoaded){
     this.depthLevel = _paramerter.depthLevel;
     this.isFirst = _paramerter.isFirst;
 
+    this.nextPos = {x: 0, y: 0, z:0}; //updateで値が変化
+
+    this.url = _paramerter.url || 'no url';
+    this.text = _paramerter.text || 'no text';
+
     this.radius = 0.14;
     this.maxRadius = 8;
-    this.maxHeight = 14;
+    /*
+    this.maxHeight = this.text.length/4;
+    if(this.maxHeight<14) this.maxHeight = 14;
+    */
 
-    this.nextPos = {x: 0, y: 0, z:0}; //updateで値が変化
-    this.text = 'this is fun, but he thinks that'; //'物語の木test ';
+    this.maxHeight = 14;
 
     this.createMesh();
     this.createSprite();
@@ -119,7 +126,7 @@ BranchTube.prototype.createSprite = function(){
     strColor: color.getHexString(),
   });
 
-  textBoardObject.addTextLine(this.text);
+  textBoardObject.addTextLine(this.url);
   
   var sprite = textBoardObject.cleateSpriteObject();
 
@@ -174,6 +181,7 @@ BranchTube.prototype.popParamerter = function(){
     maxRadius: this.maxRadius,
     maxHeight: this.maxHeight,
     text: this.text,
+    url: this.url,
     //-
     meshRotation: this.meshRotation,
     nextPos: this.nextPos,
@@ -200,7 +208,8 @@ BranchTube.prototype.load = function(_paramerter){
   this.radius = _paramerter.radius;
   this.maxRadius = _paramerter.maxRadius;
   this.maxHeight = _paramerter.maxHeight;
-  this.text = _paramerter.text; 
+  this.text = _paramerter.text || 'no text'; 
+  this.url = _paramerter.url || 'no url';
 
   this.meshRotation = _paramerter.meshRotation;
 

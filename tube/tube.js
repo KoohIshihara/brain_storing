@@ -2,6 +2,7 @@ var branches_array = [];
 
 var scene;
 var camera;
+var trackballControls;
 var webGLRenderer;
 
 function init() {
@@ -25,7 +26,7 @@ function init() {
   camera.position.z = 200;
   camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-  var trackballControls = new THREE.TrackballControls(camera);
+  trackballControls = new THREE.TrackballControls(camera);
   trackballControls.rotateSpeed = 2.0;
   trackballControls.zoomSpeed = 2.0;
   trackballControls.panSpeed = 2.0;
@@ -35,7 +36,8 @@ function init() {
 
   var projector = new THREE.Projector();
   //document.addEventListener('mousedown', onDocumentMouseDown, false);
-  document.addEventListener('mousedown', rayTest, false);
+  var canvas = document.getElementById('WebGL-output');
+  canvas.addEventListener('click', launchRay, false);
 
   document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
 
@@ -48,6 +50,8 @@ function init() {
 
   var paramerter = {
     pos: pos,
+    url: 'http://www.huffingtonpost.jp/2017/06/14/conspiracy-law_n_17100976.html',
+    text: '犯罪を計画段階から処罰できるようにする「共謀罪」の趣旨を含む改正組織的犯罪処罰法が6月15日午前7時46分、参院本会議で自民・公明・日本維新の会などの賛成多数で可決、成立した。',
     points: points,
     branchNum: branches_array.length,
     preBranchNum: 0,
@@ -80,7 +84,20 @@ function init() {
   }
 
 
-  function rayTest(event) {
+  function launchRay(event) {
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+    raycaster.setFromCamera( mouse, camera );
+    var intersects = raycaster.intersectObjects( scene.children );
+    if(intersects.length > 0){
+      var mesh = intersects[0].object;
+      openModal(mesh.branchNum); // openModalはmodal.jsに記述
+    }
+  }
+
+  /*
+  function launchRay(event) {
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
@@ -114,46 +131,8 @@ function init() {
       console.log(mesh);
     }
   }
-  /*
-  function onDocumentMouseDown(event) {
-    var vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5);
-    vector = vector.unproject(camera);
-    var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
-    
-    var objects_array = [];
-    for(var i=0; i < branches_array.length; i++) {
-      objects_array.push(branches_array[i].getMesh());
-    }
-    var intersects = raycaster.intersectObjects(objects_array);
-
-    if (intersects.length > 0) {
-      console.log(intersects);
-      var mesh = intersects[0].object;
-      var pos = branches_array[mesh.branchNum].nextPos;
-      var points = [];
-      points.push(new THREE.Vector3(0, 0, 0));
-      points.push(new THREE.Vector3(0, 0, 0));
-      var branchNum = branches_array.length;
-      var preBranchNum = mesh.branchNum;
-      var depthLevel = branches_array[mesh.branchNum].depthLevel + 1;
-
-      var paramerter = {
-        pos: pos,
-        points: points,
-        branchNum: branchNum,
-        preBranchNum: preBranchNum,
-        depthLevel: depthLevel,
-        isFirst: false,
-      };
-      var branch = new BranchTube(paramerter);
-      branches_array.push(branch);
-      scene.add(branches_array[branchNum].getMesh());
-      console.log(mesh);
-    }else{
-      console.log('none');
-    }
-  }
   */
+
   function initStats() {
     var stats = new Stats();
     stats.setMode(0); // 0: fps, 1: ms
@@ -177,5 +156,15 @@ function onResize() {
   webGLRenderer.setSize(window.innerWidth, window.innerHeight);
 }
 window.addEventListener('resize', onResize, false);
+
+
+
+$('.wrap-modal').mouseover(function() {
+  trackballControls.enabled = false;
+});
+
+$('.wrap-modal').mouseout(function() {
+  trackballControls.enabled = true;
+});
 
 
