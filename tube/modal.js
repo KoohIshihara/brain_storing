@@ -2,6 +2,7 @@
 var branchParams;
 
 function openModal(_branchNum){
+
   $('.wrap-modal').fadeToggle(400);
 
   var pos = branches_array[_branchNum].nextPos;
@@ -45,8 +46,8 @@ function openModal(_branchNum){
 
 function closeModal(){
   $('.wrap-modal').fadeToggle(400);
-  $('.url-input')[0].value = "";
-  $('.text-input')[0].value = "";
+  //$('.url-input')[0].value = "";
+  //$('.text-input')[0].value = "";
   branchParams = {};
 
   $('.list').empty();
@@ -65,3 +66,10 @@ function createNextBranch(){
   scene.add(branches_array[branchParams.branchNum].getMesh());
   closeModal();
 }
+
+
+function textClear(){
+  $('.url-input')[0].value = "";
+  $('.text-input')[0].value = "";
+}
+

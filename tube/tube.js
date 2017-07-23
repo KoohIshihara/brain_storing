@@ -92,6 +92,7 @@ function init() {
     var intersects = raycaster.intersectObjects( scene.children );
     if(intersects.length > 0){
       var mesh = intersects[0].object;
+      console.log(mesh);
       openModal(mesh.branchNum); // openModalはmodal.jsに記述
     }
   }
