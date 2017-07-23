@@ -3,7 +3,7 @@
 <html>
 
 <head>
-  <title>Example 06.04 - Extrude TubeGeometry</title>
+  <title>Article Franken</title>
 
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Cache-Control" content="no-cache">
@@ -29,15 +29,19 @@
 <body>
 
 <div id="gui">
-  <input class="button" type="button" onclick="saveStorage();" value="save">
+  <!--input class="button" type="button" onclick="saveStorage();" value="save">
   <input class="button" type="button" onclick="loadStorage();" value="load">
-  <!--input class="button" type="button" onclick="resetStorage();" value="reset"-->
   <input class="button" type="button" onclick="listArray();" value="list">
   <input class="button" type="button" onclick="openModal(0);" value="openModal">
   <input class="button" type="button" onclick="textClear();" value="clear textbox">
   <input class="button" type="button" onclick="saveLocal();" value="save local">
 
-  <a id="download" target="_blank"> download json </a>
+  <a id="download" target="_blank"> download json </a-->
+
+  <input class="button" type="button" onclick="stepNext();" value="step next">
+  <input class="button" type="button" onclick="openModal(0);" value="openModal">
+  <input class="button" type="button" onclick="closeModal();" value="closeModal">
+
   <br>
 </div>
 
@@ -46,26 +50,13 @@
 
 
 <div class="wrap-modal">
-  <div class="window-modal">
-
-    <div class="gui-prop">
-      <textarea name="url" class="url-input" rows="3" cols="60">url</textarea>
-      <textarea name="url" class="text-input" rows="3" cols="60">text</textarea>
-      <input type="button" onclick="createNextBranch();" value="create">
-      <input type="button" onclick="closeModal();" value="close">
-    </div>
-
-    <div class="wrap-lists">
-      <div class="list">
-        <!--div class="list-wrap-circle">
-          <div class="circle"></div>
-        </div-->
-        <!--div class="list-text">テロ等準備罪の創設を急ぐ理由に関し、首相は日本の国際組織犯罪防止条約の締結に同罪が必要で、「条約を締結できなければ東京五輪を開けないと言っても過言でない」と述べている。</div>
-        <div class="list-text">テロ等準備罪の創設を急ぐ理由に関し、首相は日本の国際組織犯罪防止条約の締結に同罪が必要で、「条約を締結できなければ東京五輪を開けないと言っても過言でない」と述べている。</div-->
-      </div>
-    </div>
-
+  <div class="wrap-window">
+    <img class="window-modal" src="./img/1.jpg">
   </div>
+  <!--div class="window-modal">
+    <div class="wrap-lists">
+    </div>
+  </div-->
 </div>
 
 <div id="Stats-output"></div>
@@ -81,6 +72,7 @@
 
 <script type="text/javascript" src="./manageStorage.js"></script>
 <script type="text/javascript" src="./modal.js"></script>
+<script type="text/javascript" src="./camera.js"></script>
 
 
 </body>

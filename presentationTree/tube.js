@@ -19,20 +19,22 @@ function init() {
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
   webGLRenderer = new THREE.WebGLRenderer();
-  webGLRenderer.setClearColor(new THREE.Color(0xffffff));
+  webGLRenderer.setClearColor(new THREE.Color(0x000000));
   webGLRenderer.setSize(window.innerWidth, window.innerHeight);
   webGLRenderer.shadowMap.enabled = true;
 
-  camera.position.z = 200;
-  camera.lookAt(new THREE.Vector3(0, 0, 0));
+  camera.position.y = -10;
+  camera.position.z = 10;
+  camera.lookAt(new THREE.Vector3(nowLookPos.x, nowLookPos.y, nowLookPos.z));
 
+  /*
   trackballControls = new THREE.TrackballControls(camera);
   trackballControls.rotateSpeed = 2.0;
   trackballControls.zoomSpeed = 2.0;
   trackballControls.panSpeed = 2.0;
   trackballControls.staticMoving = true;
   trackballControls.target.set(0,20,0);
-
+  */
 
   var projector = new THREE.Projector();
   //document.addEventListener('mousedown', onDocumentMouseDown, false);
@@ -50,8 +52,8 @@ function init() {
 
   var paramerter = {
     pos: pos,
-    url: 'http://www.huffingtonpost.jp/2017/06/14/conspiracy-law_n_17100976.html',
-    text: '犯罪を計画段階から処罰できるようにする「共謀罪」の趣旨を含む改正組織的犯罪処罰法が6月15日午前7時46分、参院本会議で自民・公明・日本維新の会などの賛成多数で可決、成立した。',
+    //url: 'http://www.huffingtonpost.jp/2017/06/14/conspiracy-law_n_17100976.html',
+    text: 'Article Franken',
     points: points,
     branchNum: branches_array.length,
     preBranchNum: 0,
@@ -67,6 +69,8 @@ function init() {
   var raycaster = new THREE.Raycaster();
   var mouse = new THREE.Vector2();
 
+  loadBranches_array();
+
   render();
 
   function render() {
@@ -74,11 +78,13 @@ function init() {
     stats.update();
     var delta = clock.getDelta();
 
+    if(allowStep) zoomToPoint();
+
     for(var i=0; i<branches_array.length; i++){
       branches_array[i].update();
     }
 
-    trackballControls.update(delta);
+    //trackballControls.update(delta);
     requestAnimationFrame(render);
     webGLRenderer.render(scene, camera);
   }
@@ -132,35 +138,6 @@ function init() {
     }
   }
 
-  createBranch(0, 10);
-
-  function createBranch(_preBranchNum, _rotationRad, _text) {
-
-    var pos = branches_array[_preBranchNum].nextPos;
-    var points = [];
-    points.push(new THREE.Vector3(0, 0, 0));
-    points.push(new THREE.Vector3(0, 0, 0));
-    var branchNum = branches_array.length;
-    var preBranchNum = _preBranchNum;
-    var depthLevel = branches_array[_preBranchNum].depthLevel + 1;
-
-    var paramerter = {
-      pos: pos,
-      points: points,
-      branchNum: branchNum,
-      preBranchNum: preBranchNum,
-      rotationRad: _rotationRad,
-      text: _text,
-      depthLevel: depthLevel,
-      isFirst: false,
-    };
-
-    var branch = new BranchTube(paramerter);
-    branches_array.push(branch);
-    scene.add(branches_array[branchNum].getMesh());
-    console.log(branch);
-  }
-
   function initStats() {
     var stats = new Stats();
     stats.setMode(0); // 0: fps, 1: ms
@@ -186,7 +163,7 @@ function onResize() {
 window.addEventListener('resize', onResize, false);
 
 
-
+/*
 $('.wrap-modal').mouseover(function() {
   trackballControls.enabled = false;
 });
@@ -194,5 +171,8 @@ $('.wrap-modal').mouseover(function() {
 $('.wrap-modal').mouseout(function() {
   trackballControls.enabled = true;
 });
+*/
+
+
 
 

@@ -18,10 +18,12 @@ var BranchTube = function(_paramerter, _isLoaded){
 
     this.nextPos = {x: 0, y: 0, z:0}; //updateで値が変化
 
+    this.cameraPos = {x: 0, y: 0, z:0};
+
     this.url = _paramerter.url || 'no url';
     this.text = _paramerter.text || 'no text';
 
-    this.radius = 0.14;
+    this.radius = 0.001;
     this.maxRadius = 8;
     /*
     this.maxHeight = this.text.length/4;
@@ -29,7 +31,7 @@ var BranchTube = function(_paramerter, _isLoaded){
     */
     this.rotationRad = _paramerter.rotationRad || 0;
 
-    this.maxHeight = 14;
+    this.maxHeight = 18;
 
     this.createMesh();
     this.createSprite();
@@ -46,8 +48,8 @@ BranchTube.prototype.createMesh = function(){
   //(points, segments, radius, radiusSegments, closed, taper)
   var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 8, this.radius, 4, false);
   var material = new THREE.MeshBasicMaterial();
-  //material.color = new THREE.Color( 0x999999 );
-  material.color = new THREE.Color("hsl("+ this.depthLevel*10 +", 50%, 70%)");
+  material.color = new THREE.Color( 0xffffff );
+  //material.color = new THREE.Color("hsl("+ this.depthLevel*10 +", 50%, 70%)");
   material.wireframe = true;
   material.wireframeLinewidth = 0.1;
   this.mesh = new THREE.Mesh(tubeGeometry, material);
@@ -101,6 +103,10 @@ BranchTube.prototype.createMesh = function(){
   this.nextPos.y = this.mesh.position.y + r*Math.sin(theta)*Math.sin(phi);
   this.nextPos.z = this.mesh.position.z + r*Math.cos(theta);
 
+  this.cameraPos.x = this.mesh.position.x + -r/2*Math.sin(theta)*Math.cos(phi);
+  this.cameraPos.y = this.mesh.position.y + r/2*Math.sin(theta)*Math.sin(phi);
+  this.cameraPos.z = this.mesh.position.z + r/2*Math.cos(theta);  
+
 }
 
 BranchTube.prototype.createSprite = function(){
@@ -112,6 +118,7 @@ BranchTube.prototype.createSprite = function(){
   textPos.x = this.mesh.position.x + -r*Math.sin(theta)*Math.cos(phi);
   textPos.y = this.mesh.position.y + r*Math.sin(theta)*Math.sin(phi);
   textPos.z = this.mesh.position.z + r*Math.cos(theta);
+  textPos.z += 0.1;
 
   /*
   function floatFormat( number, n ) {
@@ -148,7 +155,7 @@ BranchTube.prototype.createSprite = function(){
   textScale.z = sprite.scale.z;
   
   sprite.position.set(textPos.x, textPos.y, textPos.z);
-  sprite.scale.set((textScale.x)*0.08 ,(textScale.y)*0.08 , (textScale.z)*0.08);
+  sprite.scale.set(textScale.x*0.12 ,textScale.y*0.12 , textScale.z*0.12);
   sprite.branchNum = this.branchNum;
   scene.add(sprite);
   this.sprite = sprite;

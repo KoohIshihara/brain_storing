@@ -44,9 +44,11 @@ BranchTube.prototype.getMesh = function(){
 BranchTube.prototype.createMesh = function(){
   //(points, segments, radius, radiusSegments, closed, taper)
   var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 8, this.radius, 4, false);
+  
+  //this.hAdd = 0;
   var material = new THREE.MeshBasicMaterial();
   //material.color = new THREE.Color( 0x999999 );
-  material.color = new THREE.Color("hsl("+ this.depthLevel*10 +", 50%, 70%)");
+  material.color = new THREE.Color("hsl("+ this.depthLevel*10+this.hAdd +", 50%, 70%)");
   material.wireframe = true;
   material.wireframeLinewidth = 0.1;
   this.mesh = new THREE.Mesh(tubeGeometry, material);
@@ -144,6 +146,15 @@ BranchTube.prototype.createSprite = function(){
 
 BranchTube.prototype.update = function(){
  
+  //this.hAdd=0;
+
+  var material = new THREE.MeshBasicMaterial();
+  material.color = new THREE.Color("hsl("+ this.depthLevel*10/*+this.hAdd*/ +", 50%, 70%)");
+  material.wireframe = true;
+  material.wireframeLinewidth = 0.1;
+
+  this.mesh.material = material;
+
   if (this.points[1].y < this.maxHeight) {
     
     this.points[1].y += 0.4;
@@ -214,7 +225,7 @@ BranchTube.prototype.load = function(_paramerter){
   this.meshRotation = _paramerter.meshRotation;
 
   console.log(this.meshRotation);
-
+  this.hAdd = 0;
   this.points_three = [];
   for(var i=0; i<this.points.length; i++){
     var point = new THREE.Vector3(this.points[i].x, this.points[i].y, this.points[i].z);
@@ -223,7 +234,7 @@ BranchTube.prototype.load = function(_paramerter){
   //(points, segments, radius, radiusSegments, closed, taper)
   var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points_three), 8, this.radius, 4, false);
   var material = new THREE.MeshBasicMaterial();
-  material.color = new THREE.Color("hsl("+ this.depthLevel*10 +", 50%, 70%)");
+  material.color = new THREE.Color("hsl("+ this.depthLevel*10/*+this.hAdd*/ +", 50%, 70%)");
   material.wireframe = true;
   material.wireframeLinewidth = 0.1;
   //material.opacity = 0.4;
