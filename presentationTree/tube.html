@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>Example 06.04 - Extrude TubeGeometry</title>
+
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" content="no-cache">
+
+  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1">
+  <meta charset="utf-8">
+
+  <!--script type="text/javascript" src="../../libs/three.js"></script-->
+  <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+
+  <script type="text/javascript" src="./three.min.js"></script>
+
+
+  <script type="text/javascript" src="../../libs/stats.js"></script>
+  <script type="text/javascript" src="../../libs/dat.gui.js"></script>
+  <script type="text/javascript" src="../../libs/renderers/Projector.js"></script>
+  <script type="text/javascript" src="../../libs/controls/TrackballControls.js"></script>
+
+  
+  <link rel="stylesheet" href="style.css" type="text/css">
+
+</head>
+<body>
+
+<div id="gui">
+  <input class="button" type="button" onclick="saveStorage();" value="save">
+  <input class="button" type="button" onclick="loadStorage();" value="load">
+  <!--input class="button" type="button" onclick="resetStorage();" value="reset"-->
+  <input class="button" type="button" onclick="listArray();" value="list">
+  <input class="button" type="button" onclick="openModal(0);" value="openModal">
+  <input class="button" type="button" onclick="textClear();" value="clear textbox">
+  <input class="button" type="button" onclick="saveLocal();" value="save local">
+
+  <a id="download" target="_blank"> download json </a>
+  <br>
+</div>
+
+<!--input type="button" name="url" value="00000000000" class="testButton">
+<input type="text" name="url" value="00000000000" class="testText"-->
+
+
+<div class="wrap-modal">
+  <div class="window-modal">
+
+    <div class="gui-prop">
+      <textarea name="url" class="url-input" rows="3" cols="60">url</textarea>
+      <textarea name="url" class="text-input" rows="3" cols="60">text</textarea>
+      <input type="button" onclick="createNextBranch();" value="create">
+      <input type="button" onclick="closeModal();" value="close">
+    </div>
+
+    <div class="wrap-lists">
+      <div class="list">
+        <!--div class="list-wrap-circle">
+          <div class="circle"></div>
+        </div-->
+        <!--div class="list-text">テロ等準備罪の創設を急ぐ理由に関し、首相は日本の国際組織犯罪防止条約の締結に同罪が必要で、「条約を締結できなければ東京五輪を開けないと言っても過言でない」と述べている。</div>
+        <div class="list-text">テロ等準備罪の創設を急ぐ理由に関し、首相は日本の国際組織犯罪防止条約の締結に同罪が必要で、「条約を締結できなければ東京五輪を開けないと言っても過言でない」と述べている。</div-->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="Stats-output"></div>
+<div id="WebGL-output"></div>
+
+
+<script type="text/javascript" src='./TextLeaves.js'></script>
+<script type="text/javascript" src='./BranchTube.js'></script>
+<script type="text/javascript" src='./TextBoad.js'></script>
+
+<script type="text/javascript" src='./textAnalys.js'></script>
+<script type="text/javascript" src="./tube.js"></script>
+
+<script type="text/javascript" src="./manageStorage.js"></script>
+<script type="text/javascript" src="./modal.js"></script>
+
+
+</body>
+</html>
