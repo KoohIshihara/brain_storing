@@ -158,7 +158,7 @@ BranchTube.prototype.createSprite = function(){
   textScale.z = sprite.scale.z;
   
   sprite.position.set(textPos.x, textPos.y, textPos.z);
-  sprite.scale.set(textScale.x*0.12 ,textScale.y*0.12 , textScale.z*0.12);
+  sprite.scale.set(textScale.x*0.18 ,textScale.y*0.18 , textScale.z*0.18);
   sprite.branchNum = this.branchNum;
   scene.add(sprite);
   this.sprite = sprite;
