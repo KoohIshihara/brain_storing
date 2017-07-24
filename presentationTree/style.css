@@ -9,6 +9,13 @@ body {
 #gui {
   position: fixed;
   z-index: 1000;
+
+
+  display: none;
+}
+
+#Stats-output {
+  display: none;
 }
 
 .wrap-modal {

@@ -35,6 +35,16 @@ var BranchTube = function(_paramerter, _isLoaded){
 
   }// isLoaded else
 
+  // loadしたかに関わらず一定の初期値をもつプロパティ
+  this.isGrown = false;
+  var r = this.maxHeight;
+  var theta = Math.PI/2 - this.mesh.rotation.x;
+  var phi = Math.PI/2 - this.mesh.rotation.z;
+  
+  this.nextPos.x = this.mesh.position.x + -r*Math.sin(theta)*Math.cos(phi);
+  this.nextPos.y = this.mesh.position.y + r*Math.sin(theta)*Math.sin(phi);
+  this.nextPos.z = this.mesh.position.z + r*Math.cos(theta);
+
 }
 
 BranchTube.prototype.getMesh = function(){
@@ -48,7 +58,7 @@ BranchTube.prototype.createMesh = function(){
   //this.hAdd = 0;
   var material = new THREE.MeshBasicMaterial();
   //material.color = new THREE.Color( 0x999999 );
-  material.color = new THREE.Color("hsl("+ this.depthLevel*10+this.hAdd +", 50%, 70%)");
+  material.color = new THREE.Color("hsl("+ this.depthLevel*10/*+this.hAdd*/ +", 50%, 70%)");
   material.wireframe = true;
   material.wireframeLinewidth = 0.1;
   this.mesh = new THREE.Mesh(tubeGeometry, material);
@@ -117,20 +127,21 @@ BranchTube.prototype.createSprite = function(){
   }
   console.log(textColor);
   */
+
   var color = this.mesh.material.color;
   var textBoardObject = new TextBoardObject({
     fontSize : 6, // [%]
     textColor : {r: 0.4, g: 0, b: 0, a: 1},//これはつかってない！
     backgroundColor : { r:1, g:1, b:1, a:0.01 },//背景色（RGBA値を0から１で指定）
-    boardWidth : 128,  //マッピング対象平面オブジェクトの横幅
-    boardHeight : 16, //マッピング対象平面オブジェクトの縦幅
+    boardWidth : 256,  //マッピング対象平面オブジェクトの横幅
+    boardHeight : 32, //マッピング対象平面オブジェクトの縦幅
     fontName : "Times New Roman", //'ＭＳ Ｐゴシック',
     strColor: color.getHexString(),
   });
 
   textBoardObject.addTextLine(this.url);
   
-  var sprite = textBoardObject.cleateSpriteObject();
+  var sprite = textBoardObject.createSpriteObject();
 
   var textScale = {};
   textScale.x = sprite.scale.x;
@@ -147,28 +158,32 @@ BranchTube.prototype.createSprite = function(){
 BranchTube.prototype.update = function(){
  
   //this.hAdd=0;
-
+  /*
   var material = new THREE.MeshBasicMaterial();
-  material.color = new THREE.Color("hsl("+ this.depthLevel*10/*+this.hAdd*/ +", 50%, 70%)");
+  //material.color = new THREE.Color("hsl("+ this.depthLevel*10+this.hAdd +", 50%, 70%)");
   material.wireframe = true;
   material.wireframeLinewidth = 0.1;
 
   this.mesh.material = material;
+  */
 
-  if (this.points[1].y < this.maxHeight) {
-    
-    this.points[1].y += 0.4;
+  if (this.points[1].y < this.maxHeight && (branches_array[this.preBranchNum].isGrown || this.isFirst)) {    
+
+    this.points[1].y += 0.8;
     this.mesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 8, this.radius, 4, false);
 
-    var r = this.maxHeight;    
+    /*
+    var r = this.maxHeight;
     var theta = Math.PI/2 - this.mesh.rotation.x;
     var phi = Math.PI/2 - this.mesh.rotation.z;
     
     this.nextPos.x = this.mesh.position.x + -r*Math.sin(theta)*Math.cos(phi);
     this.nextPos.y = this.mesh.position.y + r*Math.sin(theta)*Math.sin(phi);
     this.nextPos.z = this.mesh.position.z + r*Math.cos(theta);
-
+    */
   }
+
+  if(this.points[1].y >= this.maxHeight) this.isGrown = true;
 
   if (this.radius < this.maxRadius) {
 //    this.radius += 0.002;
@@ -224,15 +239,26 @@ BranchTube.prototype.load = function(_paramerter){
 
   this.meshRotation = _paramerter.meshRotation;
 
-  console.log(this.meshRotation);
-  this.hAdd = 0;
+  /*this.hAdd = 0;*/
+  /*
   this.points_three = [];
   for(var i=0; i<this.points.length; i++){
-    var point = new THREE.Vector3(this.points[i].x, this.points[i].y, this.points[i].z);
+    //var point = new THREE.Vector3(this.points[i].x, this.points[i].y, this.points[i].z);
+    var point = new THREE.Vector3(0,0,0);
     this.points_three.push(point);
   }
+  this.points_three.push(new THREE.Vector3(0,0,0));
+  this.points_three.push(new THREE.Vector3(0,8,0));
+  */
+
+  this.points = [];
+  this.points.push(new THREE.Vector3(0,0,0));
+  this.points.push(new THREE.Vector3(0,0,0));
+
+  //console.log(this.points_three);
+
   //(points, segments, radius, radiusSegments, closed, taper)
-  var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points_three), 8, this.radius, 4, false);
+  var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 8, this.radius, 4, false);
   var material = new THREE.MeshBasicMaterial();
   material.color = new THREE.Color("hsl("+ this.depthLevel*10/*+this.hAdd*/ +", 50%, 70%)");
   material.wireframe = true;

@@ -31,20 +31,21 @@ function loadBranches_array(){
   createBranch(7, 0, 'message');
   */
 
+  createBranch(0, 0, 'Demo');
   createBranch(0, 4, 'Concept');
-  createBranch(1, 0, 'My Question');
-  createBranch(2, 10, 'How');
-  createBranch(3, 10, 'Collage Contents');
-  createBranch(3, -10, 'Forked Media');
-  createBranch(2, -10, 'Why');
-  createBranch(6, 10, 'Social Background');
-  createBranch(6, -10, 'Personal Background');
+  createBranch(2, 0, 'My Question');
+  createBranch(3, 10, 'How');
+  createBranch(4, 10, 'Collage Contents');
+  createBranch(4, -10, 'Forked Media');
+  createBranch(3, -10, 'Why');
+  createBranch(7, 10, 'Social Background');
+  createBranch(7, -10, 'Personal Background');
 
   createBranch(0, -4, 'Logic');
-  createBranch(9, 0, 'Past');
-  createBranch(9, 20, 'Now');
-  createBranch(11, 0, 'Caluculation');
-  createBranch(11, 20, 'Characteristic');
+  createBranch(10, 0, 'Past');
+  createBranch(10, 20, 'Now');
+  createBranch(12, 0, 'Caluculation');
+  createBranch(12, 20, 'Characteristic');
 
 
   for(var i=0; i<branches_array.length; i++){
@@ -54,10 +55,13 @@ function loadBranches_array(){
     // 特定のメッセージの時だけモーダルを出さない。
     allowOpenModal_array[i] = true;
     var text = branches_array[i].text;
-    if(text=='Concept' || text=='How' || text=='Why' || text=='Logic'){
+    if(text=='Demo' || text=='Concept' || text=='How' || text=='Why' || text=='Logic'){
       allowOpenModal_array[i] = false;
     }
   }
+
+
+
 }
 
 var isFirstModal = true;

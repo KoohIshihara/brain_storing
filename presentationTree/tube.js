@@ -38,8 +38,10 @@ function init() {
 
   var projector = new THREE.Projector();
   //document.addEventListener('mousedown', onDocumentMouseDown, false);
-  var canvas = document.getElementById('WebGL-output');
-  canvas.addEventListener('click', launchRay, false);
+  //var canvas = document.getElementById('WebGL-output');
+  //canvas.addEventListener('click', launchRay, false);
+
+  document.addEventListener('mousedown', stepNext, false);
 
   document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
 

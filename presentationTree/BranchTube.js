@@ -38,6 +38,9 @@ var BranchTube = function(_paramerter, _isLoaded){
 
   }// isLoaded else
 
+  // loadしたかに関わらず一定の初期値をもつプロパティ
+  this.isGrown = false;
+
 }
 
 BranchTube.prototype.getMesh = function(){
@@ -163,12 +166,14 @@ BranchTube.prototype.createSprite = function(){
 
 BranchTube.prototype.update = function(){
  
-  if (this.points[1].y < this.maxHeight) {
+  if (this.points[1].y < this.maxHeight && (branches_array[this.preBranchNum].isGrown || this.isFirst)) {
     
-    this.points[1].y += 0.4;
+    this.points[1].y += 0.8;
     this.mesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(this.points), 8, this.radius, 4, false);
 
   }
+
+  if(this.points[1].y >= this.maxHeight) this.isGrown = true;
 
   if (this.radius < this.maxRadius) {
 //    this.radius += 0.002;
@@ -228,7 +233,8 @@ BranchTube.prototype.load = function(_paramerter){
 
   this.points_three = [];
   for(var i=0; i<this.points.length; i++){
-    var point = new THREE.Vector3(this.points[i].x, this.points[i].y, this.points[i].z);
+    //var point = new THREE.Vector3(this.points[i].x, this.points[i].y, this.points[i].z);
+    var point = new THREE.Vector3(0,0,0);
     this.points_three.push(point);
   }
   //(points, segments, radius, radiusSegments, closed, taper)

@@ -114,7 +114,6 @@ TextBoardCanvas.prototype.addTextLine = function( text, indent, lineHeight ){
     this.textLines.push( {text : text, indent : indent, lineHeight : lineHeight} );
     this._lineHeight += lineHeight * this.fontSize /100 * this.canvas.width;
  
-    this.canvas.context.textAlign = 'center';
     /*
     this.canvas.context.fillText(
         text,
@@ -122,11 +121,22 @@ TextBoardCanvas.prototype.addTextLine = function( text, indent, lineHeight ){
         this._lineHeight,
     );
     */
-    this.canvas.context.fillText(
+    if(text.length>38){
+      this.canvas.context.textAlign = 'left';
+      this.canvas.context.fillText(
         text,
-        this.canvas.width/2,
+        0,
         this._lineHeight,
-    );
+      );
+    }else{
+      this.canvas.context.textAlign = 'center';
+      this.canvas.context.fillText(
+          text,
+          this.canvas.width/2,
+          this._lineHeight,
+      );
+    }
+    
  
 }
 //canvas要素を取得
@@ -148,7 +158,7 @@ var TextBoardObject = function( parameter ){
 TextBoardObject.prototype = Object.create( TextBoardCanvas.prototype );
 TextBoardObject.constructor = TextBoardObject;
  
-TextBoardObject.prototype.cleatePlaneObject = function(){
+TextBoardObject.prototype.createPlaneObject = function(){
  
     //テクスチャ画像用のcanvas要素の取得
     var canvas = this.getTextCanvas();
@@ -166,7 +176,7 @@ TextBoardObject.prototype.cleatePlaneObject = function(){
  
     return this.plane;
 }
-TextBoardObject.prototype.cleateSpriteObject = function(){
+TextBoardObject.prototype.createSpriteObject = function(){
  
     //テクスチャ画像用のcanvas要素の取得
     var canvas = this.getTextCanvas();
@@ -184,7 +194,7 @@ TextBoardObject.prototype.cleateSpriteObject = function(){
  
     return this.sprite;
 }
-TextBoardObject.prototype.cleateTextScreen = function(){
+TextBoardObject.prototype.createTextScreen = function(){
  
     this.textScene = new THREE.Scene();
     if( this.sprite ){
@@ -193,7 +203,7 @@ TextBoardObject.prototype.cleateTextScreen = function(){
  
     } else {
  
-        this.textScene.add( this.cleateSpriteObject() );
+        this.textScene.add( this.createSpriteObject() );
     }
  
     this.textCamera = new THREE.OrthographicCamera(-this.boardWidth/2, this.boardWidth/2, this.boardHeight/2, -this.boardHeight/2, -10, 10);

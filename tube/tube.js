@@ -39,6 +39,10 @@ function init() {
   var canvas = document.getElementById('WebGL-output');
   canvas.addEventListener('click', launchRay, false);
 
+  canvas.addEventListener("mousedown", mdown, false);
+  //canvas.addEventListener("touchstart", mdown, false);
+  //canvas.addEventListener("mousestop", underMoving, false);
+
   document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
 
   // branches_arrayはグローバルに宣言
@@ -74,6 +78,8 @@ function init() {
     stats.update();
     var delta = clock.getDelta();
 
+    if(mdownCount>0) mdownCount--;
+
     for(var i=0; i<branches_array.length; i++){
       branches_array[i].update();
     }
@@ -83,19 +89,35 @@ function init() {
     webGLRenderer.render(scene, camera);
   }
 
+  /*
+  var mouseIsMoving = false;
+  function underMoving(event) {
+    mouseIsMoving = true;
+  }
+  */
+  var mdownCount = 0; // render()で処理
+  function mdown(event) {
+    mdownCount = 10;
+  }
 
   function launchRay(event) {
-    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
-    raycaster.setFromCamera( mouse, camera );
-    var intersects = raycaster.intersectObjects( scene.children );
-    if(intersects.length > 0){
-      var mesh = intersects[0].object;
-      console.log(mesh);
-      openModal(mesh.branchNum); // openModalはmodal.jsに記述
+    if(mdownCount>0){ // クリック以外で反応しないようにする。
+      mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+      mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+      raycaster.setFromCamera( mouse, camera );
+      var intersects = raycaster.intersectObjects( scene.children );
+      if(intersects.length > 0){
+        var mesh = intersects[0].object;
+        console.log(mesh);
+        openModal(mesh.branchNum); // openModalはmodal.jsに記述
+      }
     }
+
   }
+
+
 
   /*
   function launchRay(event) {
